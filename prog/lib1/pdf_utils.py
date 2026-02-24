@@ -1,9 +1,13 @@
-# pdf_utils.py — Version 1.0
+# pdf_utils.py — Version 1.1
 # Gestion des conversions DOCX vers PDF
+# v1.1: Correction logique "PDF créé aujourd'hui" pour éviter reconversion en boucle
 
 from pathlib import Path
 from datetime import datetime
 from typing import Tuple
+
+# Variable globale : heure de début de la session
+SESSION_START_TIME = datetime.now()
 
 def pdf_cree_aujourdhui(pdf_path: Path) -> bool:
     """Vérifie si un PDF a été créé aujourd'hui.
@@ -23,6 +27,9 @@ def pdf_cree_aujourdhui(pdf_path: Path) -> bool:
 def doit_regenerer_pdf(docx_path: Path, pdf_path: Path, config_regeneration, 
                        regenerer_aujourdhui: bool = True) -> Tuple[bool, str]:
     """Détermine si un PDF doit être regénéré.
+    
+    v1.1: Si PDF créé aujourd'hui, vérifie qu'il soit créé AVANT cette session
+    pour éviter de reconvertir les PDF qu'on vient de générer.
     
     Args:
         docx_path: Chemin du DOCX source
@@ -52,9 +59,17 @@ def doit_regenerer_pdf(docx_path: Path, pdf_path: Path, config_regeneration,
             # Format date invalide, ignorer
             pass
     
-    # 4. PDF créé aujourd'hui (si activé dans config)
-    if regenerer_aujourdhui and pdf_cree_aujourdhui(pdf_path):
-        return (True, "PDF créé aujourd'hui")
+    # 4. PDF créé aujourd'hui AVANT cette session
+    # v1.1: Évite de reconvertir les PDF créés dans CETTE session
+    if regenerer_aujourdhui:
+        pdf_mtime = datetime.fromtimestamp(pdf_path.stat().st_mtime)
+        
+        # PDF créé aujourd'hui ?
+        if pdf_mtime.date() == datetime.now().date():
+            # Créé AVANT le début de cette session ?
+            if pdf_mtime < SESSION_START_TIME:
+                return (True, "PDF créé aujourd'hui (session précédente)")
+            # Sinon : créé PENDANT cette session → ne pas reconvertir
     
     # 5. DOCX plus récent que PDF
     if docx_path.stat().st_mtime > pdf_path.stat().st_mtime:
@@ -125,6 +140,10 @@ def est_fichier_copiable(fichier: Path, extensions_copiables: set) -> bool:
     if fichier.name == "STRUCTURE.py":
         return False
     
+    # Fichiers temporaires Word jamais copiés
+    if fichier.name.startswith('~$'):
+        return False
+    
     # DOCX jamais copiés (convertis en PDF)
     ext = fichier.suffix.lower().lstrip(".")
     if ext in ("doc", "docx"):
@@ -140,4 +159,4 @@ def est_fichier_copiable(fichier: Path, extensions_copiables: set) -> bool:
     
     return False
 
-# Fin pdf_utils.py v1.0
+# Fin pdf_utils.py v1.1

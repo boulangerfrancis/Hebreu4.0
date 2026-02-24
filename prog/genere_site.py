@@ -1,6 +1,6 @@
-# genere_site.py — Version 23.4
+# genere_site.py — Version 23.5
 
-version = ("genere_site.py", "23.4")
+version = ("genere_site.py", "23.5")
 
 """
 Générateur de site statique - Version 23.4
@@ -35,12 +35,12 @@ from bs4 import BeautifulSoup
 
 # Import module conversion PDF
 try:
-    from docx2pdf import convertir_docx_vers_pdf, HAS_WIN32COM
-    DOCX2PDF_DISPONIBLE = True
+    from conversion_pdf import convertir_docx_vers_pdf, HAS_PDFCREATOR
+    DOCX2PDF_DISPONIBLE = HAS_PDFCREATOR
 except ImportError:
     DOCX2PDF_DISPONIBLE = False
-    HAS_WIN32COM = False
-    print("AVERTISSEMENT : docx2pdf.py non trouvé")
+    HAS_PDFCREATOR = False
+    print("AVERTISSEMENT : conversion_pdf.py non trouvé")
 
 # Import configuration et modules
 from lib1.options import DOSSIER_DOCUMENTS, DOSSIER_HTML, BASE_PATH
@@ -457,7 +457,6 @@ def copier_fichiers_site() -> None:
             src_file = Path(racine) / fichier
             if pdf.est_fichier_copiable(src_file, EXTENSIONS_COPIABLES):
                 dst_file = cible / normaliser_nom(fichier)
-                print(f"Range {dst_file}" )
                 shutil.copy2(src_file, dst_file)
 
 # ============================================================================
@@ -476,10 +475,10 @@ def main() -> None:
     log("")
     
     # Config
-    if DOCX2PDF_DISPONIBLE and HAS_WIN32COM:
-        log("✓ Conversion PDF disponible")
+    if DOCX2PDF_DISPONIBLE and HAS_PDFCREATOR:
+        log("✓ Conversion PDF disponible (PDFCreator)")
     else:
-        log("✗ Conversion PDF désactivée")
+        log("✗ Conversion PDF désactivée (PDFCreator manquant)")
     log("")
     
     # Créer dossier HTML et copier style.css
