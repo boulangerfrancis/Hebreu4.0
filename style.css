@@ -332,6 +332,46 @@ footer {
 .tree a:hover {
     background: #ecf0f1;
 }
+/* ==============================================================
+   Bulles
+   ============================================================== */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 2px dotted blue;
+  cursor: pointer;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 270px;
+  background-color: #1abc9c;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 12px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -135px;
+  border-spacing: 20px;
+}
+
+.tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #1abc9c transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
 
 /* ==============================================================
    FIN
