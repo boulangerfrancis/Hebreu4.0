@@ -1,4 +1,4 @@
-# fichier_utils.py — Version 1.0
+# fichier_utils.py — Version 1.1
 # Gestion fichiers spéciaux et filtrage
 
 """
@@ -97,4 +97,4 @@ def doit_filtrer_fichier(nom_fichier: str) -> bool:
     
     return False
 
-# Fin fichier_utils.py v1.0
+# Fin fichier_utils.py v1.1

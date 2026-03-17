@@ -1,11 +1,14 @@
 # Dossiers à ignorer dans les transferts
-/ancien
+**/ancien*
 **/nppBackup
 **/__pycache__
 /test
 /Documents
+/package
+/backup*
 #
 # Fichiers à ignorer dans les transferts
 *.bak
 *.log
+__* # ignore les fichiers commencçant par __ dans tous les dossiers
 #  ### FIN ###

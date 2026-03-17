@@ -1,18 +1,17 @@
 @echo off
 REM lancer.cmd — Version 4.0
 REM Lance la génération du site avec options
-echo lancer.cmd version 4.0
+
 setlocal
 
 REM Passer en mode UTF-8
 chcp 65001 >nul
 REM Génération site
-rem vérifier que le dossier courant est bien c:\Sitegithub\Hebreu4.0
 echo.
 echo ============================================================
 echo Generation du site
 echo ============================================================
-cd C:\SiteGITHUB\Hebreu4.0\prog
+cd prog
 python genere_site.py
 cd ..
 echo ============================================================
