@@ -1,0 +1,39 @@
+# config.yaml — maj_github.py v1.6
+# Mise a jour du site GitHub Hebreu4.0
+# Placer ce fichier dans le meme dossier que maj_github_v1.6.py
+
+# Dossier contenant les fichiers source editables par l'utilisateur
+racine_source     = C:\Users\frabo\Documents\Site Web perso\Site B.F. hébreu 17 mars 2026\Hebreu4.0
+
+# Dossier racine du site local (depot git clone de GitHub)
+racine_site_local = C:\SiteGITHUB\Hebreu4.0
+
+# Chemin complet vers lancer.cmd (generateur du site)
+lancer_cmd        = C:\SiteGITHUB\Hebreu4.0\prog\lancer.cmd
+
+# URL du depot GitHub (informatif uniquement — non utilisee pour le push)
+url_github        = https://github.com/boulangerfrancis/Hebreu4.0
+
+# ── Authentification GitHub ────────────────────────────────────
+# Le token est gere par Windows Credential Manager (a faire une seule fois) :
+#   https://github.com/settings/tokens
+#   cmdkey /generic:git:https://github.com /user:boulangerfrancis /pass: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
+#
+# Apres cette commande, git push fonctionne automatiquement sans mot de passe.
+# Pour verifier : cmdkey /list | findstr github
+# Pour supprimer : cmdkey /delete:git:https://github.com
+
+# ── Options ───────────────────────────────────────────────────
+# Message du commit : "auto" = date+heure automatique
+message_commit    = auto
+
+# Branche git cible
+branche           = main
+
+# Demander confirmation avant le push GitHub
+# true  = afficher une boite de dialogue (defaut)
+# false = pousser automatiquement sans demander
+confirmation_git  = true
+
+# Filtre fichiers (vide = tout accepter)
+filtre            = .*\.docx$,.*\.html$

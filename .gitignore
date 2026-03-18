@@ -8,7 +8,7 @@
 /backup*
 #
 # Fichiers à ignorer dans les transferts
-*.bak
+*.bak*
 *.log
-__* # ignore les fichiers commencçant par __ dans tous les dossiers
+#__* # ignore les fichiers commençant par __ dans tous les dossiers
 #  ### FIN ###
