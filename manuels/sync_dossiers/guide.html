@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<meta name="version" content="1.0"><title>Guide — sync_dossiers</title>
+<style>body{font-family:Arial,sans-serif;font-size:14px;line-height:1.6;max-width:960px;margin:0 auto;padding:24px;color:#222;}
+h1{font-size:22px;color:#2E75B6;border-bottom:2px solid #2E75B6;padding-bottom:6px;margin-top:32px;}
+h2{font-size:17px;color:#1F4E79;margin-top:24px;}
+h3{font-size:15px;color:#2E75B6;margin-top:16px;}
+table{border-collapse:collapse;width:100%;margin:12px 0;}
+th{background:#1F4E79;color:#fff;padding:8px 10px;text-align:left;}
+td{border:1px solid #ccc;padding:7px 10px;vertical-align:top;}
+tr:nth-child(even) td{background:#F0F6FB;}
+code,pre{font-family:'Courier New',monospace;font-size:13px;background:#F2F2F2;padding:2px 6px;border-radius:3px;}
+pre{padding:12px;display:block;white-space:pre-wrap;}
+.info-table td:first-child{background:#D5E8F0;font-weight:bold;width:160px;}
+ul{margin:6px 0;padding-left:24px;}
+li{margin:3px 0;}
+ol{margin:6px 0;padding-left:24px;}
+.titre{text-align:center;color:#1F4E79;font-size:28px;font-weight:bold;margin:32px 0 8px;}
+.sous-titre{text-align:center;color:#595959;font-size:15px;margin-bottom:24px;}
+.note{background:#FFF8E1;border-left:4px solid #F9A825;padding:10px 14px;margin:12px 0;}
+.ok{color:#27AE60;font-weight:bold;}
+.warn{color:#E67E22;font-weight:bold;}
+.err{color:#E74C3C;font-weight:bold;}
+</style></head><body>
+<div class="titre">Guide — sync_dossiers</div>
+<div class="sous-titre">Synchronisation de dossiers avec sélection visuelle</div>
+<table class="info-table" style="max-width:600px;margin:0 auto 28px;">
+  <tr><td>Version</td><td>1.0</td></tr>
+  <tr><td>Date</td><td>Mars 2026</td></tr>
+  <tr><td>Dossier</td><td><code>manuel\sync_dossiers\</code></td></tr>
+</table>
+
+<h1>1. Description</h1>
+<p><strong>sync_dossiers.py</strong> synchronise un dossier source (vos .docx en cours d'édition) vers un dossier cible (le dépôt git). Seuls les fichiers plus récents dans la source sont copiés.</p>
+
+<h1>2. Utilisation</h1>
+<h2>Via MAJ_GITHUB.cmd (automatique)</h2>
+<p>sync_dossiers est appelé automatiquement en étape 1 de maj_github.py. Aucune action manuelle nécessaire.</p>
+
+<h2>Utilisation standalone</h2>
+<pre>python prog\sync_dossiers.py prog\config.yaml</pre>
+<p>Ou drag &amp; drop d'un fichier .yaml sur l'icône du programme.</p>
+
+<h1>3. Configuration (dans config.yaml)</h1>
+<table><tr><th>Champ</th><th>Description</th></tr>
+<tr><td><code>racine_source</code></td><td>Dossier de travail contenant les .docx modifiés</td></tr>
+<tr><td><code>racine_site_local</code></td><td>Dossier cible (dépôt git local)</td></tr>
+<tr><td><code>filtre</code></td><td>Expression régulière pour filtrer les fichiers (vide = tout accepter)</td></tr>
+</table>
+
+<h2>Exemple de filtre</h2>
+<pre>filtre = .*\.docx$,.*\.png$</pre>
+<p>Copie uniquement les .docx et .png.</p>
+
+<h1>4. Interface de sélection</h1>
+<p>Une fenêtre Tkinter affiche les fichiers à synchroniser. L'utilisateur peut décocher des fichiers avant de confirmer.</p>
+
+<h1>5. Comportement</h1>
+<ul>
+<li>Seuls les fichiers <strong>plus récents dans la source</strong> sont proposés à la copie</li>
+<li>Aucun fichier n'est supprimé dans la cible</li>
+<li>Le message de résultat ne s'affiche qu'en cas d'erreur (comportement silencieux en succès)</li>
+</ul>
+
+</body></html>

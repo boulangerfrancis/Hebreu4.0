@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<meta name="version" content="2.2">
+<title>Structure du projet Hébreu4.0</title>
+<style>*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;font-size:14px;line-height:1.65;background:#F0F4F8;color:#222;min-height:100vh;}
+.page{max-width:960px;margin:0 auto;padding:24px;}
+h1{font-size:22px;color:#2E75B6;border-bottom:2px solid #2E75B6;padding-bottom:6px;margin:32px 0 12px;}
+h2{font-size:17px;color:#1F4E79;margin:24px 0 8px;}
+h3{font-size:15px;color:#2E75B6;margin:16px 0 6px;}
+p{margin:8px 0;}
+table{border-collapse:collapse;width:100%;margin:12px 0;background:#fff;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+th{background:#1F4E79;color:#fff;padding:9px 12px;text-align:left;font-size:13px;}
+td{border-bottom:1px solid #E8EEF4;padding:8px 12px;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#F5FAFF;}
+code,pre{font-family:'Courier New',monospace;font-size:13px;}
+code{background:#EBF3FB;padding:2px 6px;border-radius:3px;color:#1F4E79;}
+pre{background:#1E1E2E;color:#CDD6F4;padding:16px;border-radius:6px;margin:12px 0;white-space:pre-wrap;line-height:1.5;}
+pre .cmd{color:#A6E3A1;}
+pre .comment{color:#6C7086;}
+pre .path{color:#89DCEB;}
+ul,ol{margin:8px 0;padding-left:24px;}
+li{margin:4px 0;}
+.info-tbl td:first-child{background:#D5E8F0;font-weight:bold;width:160px;white-space:nowrap;}
+.note{background:#FEF9E7;border-left:4px solid #F4D03F;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.warn{background:#FDEDEC;border-left:4px solid #E74C3C;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.tip{background:#EAFAF1;border-left:4px solid #27AE60;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.ok{color:#27AE60;font-weight:bold;}
+.err{color:#E74C3C;font-weight:bold;}
+.warn-txt{color:#E67E22;font-weight:bold;}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:6px;vertical-align:middle;}
+.b-gen{background:#D5E8F0;color:#1F4E79;}
+.b-new{background:#D5F5E3;color:#1A5E38;}
+.b-tech{background:#FAD7A0;color:#784212;}
+.b-comp{background:#E8DAEF;color:#512E5F;}
+header{background:linear-gradient(135deg,#1F4E79 0%,#2E75B6 100%);color:#fff;padding:28px 32px 20px;border-radius:8px;margin-bottom:28px;}
+header h1{color:#fff;border:none;margin:0 0 4px;}
+header p{opacity:.8;font-size:13px;margin:0;}
+.breadcrumb{font-size:12px;color:#888;margin-bottom:20px;}
+.breadcrumb a{color:#2E75B6;text-decoration:none;}
+.breadcrumb a:hover{text-decoration:underline;}
+</style></head><body><div class="page">
+<header><h1>Structure du projet Hébreu4.0</h1><p>Arborescence complète avec versions — Mars 2026</p></header>
+<div class="breadcrumb"><a href="../index.html">🏠 Accueil</a> › _general</div>
+<table class="info-tbl" style="max-width:580px;margin-bottom:24px;">
+<tr><td>Version</td><td>2.2</td></tr>
+<tr><td>Date</td><td>Mars 2026</td></tr>
+<tr><td>Dossier</td><td><code>package\manuels\_general\</code></td></tr>
+</table>
+
+<h1>1. Vue d'ensemble</h1>
+<table>
+<tr><th>Dossier</th><th>Rôle</th><th>Règle</th></tr>
+<tr><td><code>package\prog\</code></td><td>Sources programmes versionnées</td><td>remplace.py déploie la version MAX vers <code>prog\</code></td></tr>
+<tr><td><code>package\manuels\</code></td><td>Sources manuels versionnées</td><td>remplace.py déploie la version MAX vers <code>manuels\</code></td></tr>
+<tr><td><code>prog\</code></td><td>Programmes déployés actifs</td><td>Noms sans version, copiés par remplace.py</td></tr>
+<tr><td><code>manuels\</code></td><td>Documentation déployée</td><td>Noms sans version, HTML uniquement</td></tr>
+<tr><td><code>html\</code></td><td>Site généré</td><td>Régénéré à chaque <code>lancer.cmd</code></td></tr>
+<tr><td><code>documents\</code></td><td>Sources DOCX utilisateur</td><td>Non versionné sur git (données personnelles)</td></tr>
+</table>
+
+<h1>2. Arborescence complète — Mars 2026</h1>
+<pre>
+<span class="path">Hebreu4.0\</span>
+│
+├── <span class="path">package\</span>                           ← historique versionné (source de vérité)
+│   │
+│   ├── <span class="path">prog\</span>                           ← sources programmes
+│   │   ├── genere_site_<span class="cmd">v25.6</span>.py         ← générateur principal
+│   │   ├── settings_<span class="cmd">v1.1</span>.py            ← configuration (dossier_tdm=tdm)
+│   │   ├── builder_<span class="cmd">v1.2</span>.py             ← génération HTML
+│   │   ├── documents_<span class="cmd">v2.2</span>.py           ← gestion DOCX/PDF
+│   │   ├── musique_<span class="cmd">v1.14</span>.py            ← partitions musicales
+│   │   ├── cree_table_des_matieres_<span class="cmd">v6.33</span>.py ← TDM (dossier tdm/)
+│   │   ├── conversion_pdf_<span class="cmd">v1.0</span>.py      ← wrapper PDF
+│   │   ├── docx_to_pdf_<span class="cmd">v1.3</span>.py         ← conversion via PDFCreator
+│   │   ├── normalisation_utils_<span class="cmd">v1.0</span>.py  ← normalisation noms
+│   │   ├── place_bouton_<span class="cmd">v02</span>.py         ← boutons YouTube sur PDF
+│   │   ├── maj_github_<span class="cmd">v1.17</span>.py         ← push GitHub (GCM + token)
+│   │   ├── sync_dossiers_<span class="cmd">v1.1</span>.py       ← synchronisation dossiers
+│   │   ├── remplace_<span class="cmd">v21</span>.py             ← déploiement package→prog+manuels
+│   │   ├── versions_<span class="cmd">v1.8</span>.py            ← vérification installation
+│   │   ├── installer_<span class="cmd">v1.1</span>.py           ← création venv + bibliothèques
+│   │   ├── lancer_<span class="cmd">v4.4</span>.cmd             ← génération site + serveur local
+│   │   ├── MAJ_GITHUB_<span class="cmd">v1.0</span>.cmd         ← lanceur maj_github.py
+│   │   ├── config_<span class="cmd">v1.5</span>.yaml            ← modèle config (sans token)
+│   │   ├── style_<span class="cmd">v4.2</span>.css              ← feuille de style site
+│   │   ├── lib_fichier_utils_<span class="cmd">v1.1</span>.py  ─┐
+│   │   ├── lib_html_utils_<span class="cmd">v1.0</span>.py      │
+│   │   ├── lib_partition_utils_<span class="cmd">v2.3</span>.py │ → prog\lib│   │   ├── lib_pdf_utils_<span class="cmd">v1.1</span>.py      │
+│   │   └── lib_structure_utils_<span class="cmd">v2.1</span>.py ┘
+│   │
+│   └── <span class="path">manuels\</span>                        ← sources manuels HTML
+│       ├── index_<span class="cmd">v1.1</span>.html
+│       ├── serveur_manuels_<span class="cmd">v1.0</span>.py
+│       ├── serveur_manuels_<span class="cmd">v1.1</span>.cmd
+│       ├── <span class="path">_general\</span>
+│       │   ├── conventions_versioning_<span class="cmd">v1.0</span>.html
+│       │   └── structure_projet_<span class="cmd">v2.2</span>.html       ← ce document
+│       ├── <span class="path">hebreu4.0\</span>
+│       │   ├── cahier_des_charges_<span class="cmd">v1.0</span>.html
+│       │   ├── descriptif_fichiers_<span class="cmd">v1.1</span>.html
+│       │   ├── guide_utilisateur_<span class="cmd">v1.1</span>.html
+│       │   └── maintenance_<span class="cmd">v1.2</span>.html
+│       ├── <span class="path">maj_github\</span>
+│       │   └── guide_utilisateur_<span class="cmd">v1.1</span>.html
+│       └── <span class="path">sync_dossiers\</span>
+│           └── guide_<span class="cmd">v1.0</span>.html
+│
+├── <span class="path">prog\</span>                               ← programmes déployés
+│   ├── genere_site.py              <span class="comment">← v25.6</span>
+│   ├── settings.py                 <span class="comment">← v1.1</span>
+│   ├── builder.py                  <span class="comment">← v1.2</span>
+│   ├── documents.py                <span class="comment">← v2.2</span>
+│   ├── musique.py                  <span class="comment">← v1.14</span>
+│   ├── cree_table_des_matieres.py  <span class="comment">← v6.33</span>
+│   ├── conversion_pdf.py           <span class="comment">← v1.0</span>
+│   ├── docx_to_pdf.py              <span class="comment">← v1.3</span>
+│   ├── normalisation_utils.py      <span class="comment">← v1.0</span>
+│   ├── place_bouton.py             <span class="comment">← v1.1</span>
+│   ├── maj_github.py               <span class="comment">← v1.17</span>
+│   ├── sync_dossiers.py            <span class="comment">← v1.1</span>
+│   ├── remplace.py                 <span class="comment">← v21</span>
+│   ├── versions.py                 <span class="comment">← v1.8</span>
+│   ├── installer.py                <span class="comment">← v1.1</span>
+│   ├── lancer.cmd                  <span class="comment">← v4.4</span>
+│   ├── MAJ_GITHUB.cmd              <span class="comment">← v1.0</span>
+│   ├── config.yaml                 <span class="comment">← PERSONNEL — non commité sur git</span>
+│   ├── style.css                   <span class="comment">← v4.2</span>
+│   └── <span class="path">lib\</span>
+│       ├── fichier_utils.py        <span class="comment">← v1.1</span>
+│       ├── html_utils.py           <span class="comment">← v1.0</span>
+│       ├── partition_utils.py      <span class="comment">← v2.3</span>
+│       ├── pdf_utils.py            <span class="comment">← v1.1</span>
+│       └── structure_utils.py      <span class="comment">← v2.1</span>
+│
+├── <span class="path">manuels\</span>                            ← documentation déployée
+│   ├── index.html                  <span class="comment">← v1.1</span>
+│   ├── serveur_manuels.py          <span class="comment">← v1.0</span>
+│   ├── serveur_manuels.cmd         <span class="comment">← v1.1</span>
+│   ├── <span class="path">_general\</span>
+│   │   ├── conventions_versioning.html  <span class="comment">← v1.0</span>
+│   │   └── structure_projet.html        <span class="comment">← v2.2</span>
+│   ├── <span class="path">hebreu4.0\</span>
+│   │   ├── cahier_des_charges.html      <span class="comment">← v1.0</span>
+│   │   ├── descriptif_fichiers.html     <span class="comment">← v1.1</span>
+│   │   ├── guide_utilisateur.html       <span class="comment">← v1.1</span>
+│   │   └── maintenance.html             <span class="comment">← v1.2</span>
+│   ├── <span class="path">maj_github\</span>
+│   │   └── guide_utilisateur.html       <span class="comment">← v1.1</span>
+│   └── <span class="path">sync_dossiers\</span>
+│       └── guide.html                   <span class="comment">← v1.0</span>
+│
+├── <span class="path">html\</span>                               ← site généré (non commité)
+│   ├── index.html
+│   ├── style.css
+│   ├── <span class="path">tdm\</span>
+│   │   └── index.html
+│   └── ...
+│
+└── <span class="path">documents\</span>                          ← sources DOCX utilisateur (données perso)
+</pre>
+
+<h1>3. Flux de déploiement</h1>
+<table>
+<tr><th>Source</th><th>Outil</th><th>Destination</th><th>Condition de copie</th></tr>
+<tr><td><code>package\prog\fichier_vX.Y.*</code></td><td rowspan="2"><code>remplace.py</code></td><td><code>prog\fichier.*</code></td><td rowspan="2">Version MAX + date plus récente</td></tr>
+<tr><td><code>package\manuels\**\fichier_vX.Y.html</code></td><td><code>manuels\**\fichier.html</code></td></tr>
+<tr><td><code>documents\*.docx</code></td><td><code>lancer.cmd</code></td><td><code>html\*.pdf + html\*.html</code></td><td>DOCX plus récent que PDF</td></tr>
+<tr><td><code>html\</code></td><td><code>MAJ_GITHUB.cmd</code></td><td>GitHub Pages</td><td>À chaque publication</td></tr>
+</table>
+
+<h1>4. Conventions de nommage</h1>
+<h2>4.1 Programmes (<code>package\prog\</code>)</h2>
+<table>
+<tr><th>Convention source</th><th>Déployé vers</th><th>Exemple</th></tr>
+<tr><td><code>nom_vX.Y.ext</code></td><td><code>prog\nom.ext</code></td><td><code>genere_site_v25.6.py → prog\genere_site.py</code></td></tr>
+<tr><td><code>lib_xxx_vX.Y.py</code></td><td><code>prog\lib\xxx.py</code></td><td><code>lib_html_utils_v1.0.py → prog\lib\html_utils.py</code></td></tr>
+<tr><td><code>archive\*</code></td><td colspan="2"><em>ignoré par remplace.py</em></td></tr>
+</table>
+<div class="note">Si plusieurs versions coexistent (<code>maj_github_v1.9.py</code> et <code>maj_github_v1.17.py</code>), remplace.py ne déploie que la <strong>version numérique la plus élevée</strong>.</div>
+
+<h2>4.2 Manuels (<code>package\manuels\</code>)</h2>
+<table>
+<tr><th>Convention source</th><th>Déployé vers</th></tr>
+<tr><td><code>_general\fichier_vX.Y.html</code></td><td><code>manuels\_general\fichier.html</code></td></tr>
+<tr><td><code>hebreu4.0\fichier_vX.Y.html</code></td><td><code>manuels\hebreu4.0\fichier.html</code></td></tr>
+<tr><td><code>index_vX.Y.html</code></td><td><code>manuels\index.html</code></td></tr>
+</table>
+
+<h1>5. Fichiers exclus de git (<code>.gitignore</code>)</h1>
+<pre>prog/config.yaml
+html/
+manuels/
+**//__pycache__/
+*.pyc
+*.log</pre>
+
+<h1>6. Séquence de démarrage (nouvelle machine)</h1>
+<ol>
+<li>Installer GitHub Desktop + Python 3.11+ + Node.js + PDFCreator</li>
+<li>Cloner le dépôt via GitHub Desktop</li>
+<li>Dézipper le package dans la racine du dépôt</li>
+<li><code>python package\prog\installer.py</code></li>
+<li>Éditer <code>prog\config.yaml</code></li>
+<li><strong>Autoriser <code>git-credential-manager.exe</code> dans le pare-feu Windows (trafic sortant)</strong></li>
+<li><code>python package\prog\remplace.py</code></li>
+<li><code>python prog\versions.py</code></li>
+<li><code>lancer.cmd</code></li>
+</ol>
+
+</div></body></html>
