@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<meta name="version" content="1.2">
+<title>Guide de maintenance &mdash; H&eacute;breu4.0</title>
+<style>*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;font-size:14px;line-height:1.65;background:#F0F4F8;color:#222;min-height:100vh;}
+.page{max-width:960px;margin:0 auto;padding:24px;}
+h1{font-size:22px;color:#2E75B6;border-bottom:2px solid #2E75B6;padding-bottom:6px;margin:32px 0 12px;}
+h2{font-size:17px;color:#1F4E79;margin:24px 0 8px;}
+h3{font-size:15px;color:#2E75B6;margin:16px 0 6px;}
+p{margin:8px 0;}
+table{border-collapse:collapse;width:100%;margin:12px 0;background:#fff;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+th{background:#1F4E79;color:#fff;padding:9px 12px;text-align:left;font-size:13px;}
+td{border-bottom:1px solid #E8EEF4;padding:8px 12px;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#F5FAFF;}
+code,pre{font-family:'Courier New',monospace;font-size:13px;}
+code{background:#EBF3FB;padding:2px 6px;border-radius:3px;color:#1F4E79;}
+pre{background:#1E1E2E;color:#CDD6F4;padding:16px;border-radius:6px;margin:12px 0;white-space:pre-wrap;line-height:1.5;}
+pre .cmd{color:#A6E3A1;}
+pre .comment{color:#6C7086;}
+pre .path{color:#89DCEB;}
+ul,ol{margin:8px 0;padding-left:24px;}
+li{margin:4px 0;}
+.info-tbl td:first-child{background:#D5E8F0;font-weight:bold;width:160px;white-space:nowrap;}
+.note{background:#FEF9E7;border-left:4px solid #F4D03F;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.warn{background:#FDEDEC;border-left:4px solid #E74C3C;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.tip{background:#EAFAF1;border-left:4px solid #27AE60;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.ok{color:#27AE60;font-weight:bold;}
+.err{color:#E74C3C;font-weight:bold;}
+.warn-txt{color:#E67E22;font-weight:bold;}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:6px;vertical-align:middle;}
+.b-gen{background:#D5E8F0;color:#1F4E79;}
+.b-new{background:#D5F5E3;color:#1A5E38;}
+.b-tech{background:#FAD7A0;color:#784212;}
+.b-comp{background:#E8DAEF;color:#512E5F;}
+header{background:linear-gradient(135deg,#1F4E79 0%,#2E75B6 100%);color:#fff;padding:28px 32px 20px;border-radius:8px;margin-bottom:28px;}
+header h1{color:#fff;border:none;margin:0 0 4px;}
+header p{opacity:.8;font-size:13px;margin:0;}
+.breadcrumb{font-size:12px;color:#888;margin-bottom:20px;}
+.breadcrumb a{color:#2E75B6;text-decoration:none;}
+.breadcrumb a:hover{text-decoration:underline;}
+</style></head><body><div class="page">
+<header><h1>Guide de maintenance &mdash; H&eacute;breu4.0</h1><p>D&eacute;ploiement, mise &agrave; jour, d&eacute;pannage &mdash; v1.2</p></header>
+<div class="breadcrumb"><a href="../index.html">&#127968; Accueil</a> &rsaquo; H&eacute;breu4.0</div>
+<table class="info-tbl" style="max-width:580px;margin-bottom:24px;">
+<tr><td>Version</td><td>1.2</td></tr>
+<tr><td>Date</td><td>Mars 2026</td></tr>
+<tr><td>Dossier</td><td><code>package\manuels\hebreu4.0\</code></td></tr>
+</table>
+<h1>1. Installation initiale (nouvelle machine)</h1><div class="note"><b>Prerequis :</b> Python 3.11+, Node.js, PDFCreator, GitHub Desktop, acces internet.</div><div class="warn"><b>Pare-feu Windows &mdash; etape obligatoire</b><br>Windows bloque <code>git-credential-manager.exe</code> par defaut, ce qui empeche tout push GitHub.<br><b>Avant le premier push :</b><br>1. Ouvrir <em>Pare-feu Windows Defender &rarr; Parametres avances &rarr; Regles de trafic sortant</em><br>2. Nouvelle regle &rarr; Programme &rarr; parcourir jusqu'a <code>git-credential-manager.exe</code><br>3. Chemin typique : <code>C:\Program Files\Git\mingw64\bin\git-credential-manager.exe</code><br>4. Autoriser la connexion<br>Sans cette autorisation : <em>"Impossible de se connecter au serveur distant (403)"</em></div><ol><li>Installer GitHub Desktop et se connecter a son compte GitHub</li><li>Cloner le depot via GitHub Desktop : <code>https://github.com/GuyTitt/Hebreu4.0</code></li><li>Dezipper le package dans <code>C:\SiteGITHUB\Hebreu4.0\</code></li><li><code>python package\prog\installer.py</code> &mdash; cree <code>C:\virpy13</code> + bibliotheques</li><li>Editer <code>prog\config.yaml</code> (voir section 2)</li><li><b>Autoriser git-credential-manager.exe dans le pare-feu</b> (voir encadre ci-dessus)</li><li><code>python package\prog\remplace.py</code> &mdash; deploie programmes ET manuels</li><li><code>python prog\versions.py</code> &mdash; verifie l'installation</li><li><code>lancer.cmd</code> &mdash; premier test</li></ol><h1>2. Configuration (<code>prog\config.yaml</code>)</h1><div class="note">Ce fichier est personnel. <b>Ne jamais le commiter sur git.</b><br>Laisser <code>github_token</code> vide si vous utilisez GCM (GitHub Desktop).</div><pre>racine_source     = C:\MonDossier\documents
+racine_site_local = C:\SiteGITHUB\Hebreu4.0
+lancer_cmd        = C:\SiteGITHUB\Hebreu4.0\prog\lancer.cmd
+url_github        = https://github.com/GuyTitt/Hebreu4.0
+github_token      =           # laisser vide = GCM (GitHub Desktop)
+github_user       =           # laisser vide = GCM (GitHub Desktop)
+branche           = main
+message_commit    = auto
+confirmation_git  = true</pre><p>Token PAT : <b>github.com &rarr; Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Tokens (classic)</b> &rarr; cocher <code>repo</code>.</p><h1>3. Mise a jour des modules</h1><h2>3.1 Modifier un programme</h2><ol><li>Editer <code>package\prog\genere_site_v25.6.py</code></li><li>Renommer en <code>genere_site_v25.7.py</code></li><li>Mettre a jour <code>version = ("genere_site.py", "25.7")</code></li><li>Ajouter <code># v25.7 : description</code> en tete</li><li><code>python package\prog\remplace.py</code></li></ol><h2>3.2 Modifier un manuel</h2><ol><li>Editer <code>package\manuels\hebreu4.0\maintenance_v1.2.html</code></li><li>Renommer en <code>maintenance_v1.3.html</code></li><li>Mettre a jour la meta version : <code>&lt;meta name="version" content="1.3"&gt;</code></li><li><code>python package\prog\remplace.py</code> &rarr; deploie vers <code>manuels\hebreu4.0\maintenance.html</code></li></ol><h2>3.3 Archiver un ancien fichier</h2><p>Deplacer dans <code>package\prog\archive\</code> ou <code>package\manuels\archive\</code> &mdash; remplace.py ignorera ces dossiers automatiquement.</p><h1>4. Depannage</h1><table><tr><th>Symptome</th><th>Cause et solution</th></tr><tr><td>Push bloque &mdash; "Impossible de se connecter"</td><td><b>Pare-feu</b> &mdash; autoriser <code>git-credential-manager.exe</code> en trafic sortant</td></tr><tr><td>Push echoue &mdash; token 401</td><td>Token expire &mdash; regenerer sur GitHub ou laisser github_token vide (GCM)</td></tr><tr><td><code>ERREUR dossier prog introuvable</code></td><td>Normal au 1er deploiement &mdash; remplace.py v21 cree <code>prog\</code> automatiquement</td></tr><tr><td><code>import lib introuvable</code></td><td>Lancer <code>remplace.py</code> en premier</td></tr><tr><td>Table des matieres absente sur GitHub</td><td>Dossier nomme <code>TDM</code> au lieu de <code>tdm</code> &mdash; renommer en minuscules</td></tr><tr><td>TDM vide localement</td><td><code>beautifulsoup4</code> non installe &mdash; <code>python package\prog\installer.py</code></td></tr><tr><td>v1.11 deploye avant v1.9</td><td>Ancienne version remplace.py &mdash; mettre a jour vers v21+</td></tr><tr><td>Manuels non deployes</td><td>Dossier <code>package\manuels\</code> absent &mdash; dezipper le package complet</td></tr></table><h1>5. Deploiement multi-postes</h1><ul><li>Meme structure <code>C:\SiteGITHUB\Hebreu4.0\</code> sur chaque machine</li><li><b>Autoriser <code>git-credential-manager.exe</code> dans le pare-feu sur chaque poste</b></li><li>Token GitHub propre a chaque utilisateur dans son <code>config.yaml</code> (ou laisser vide pour utiliser GCM)</li><li>Partager le ZIP package pour synchroniser les versions</li></ul><h1>6. Sauvegarde</h1><table><tr><th>A sauvegarder</th><th>Inutile de sauvegarder</th></tr><tr><td><code>package\</code> &mdash; historique versionne</td><td><code>prog\</code> sauf <code>config.yaml</code> (regenerable)</td></tr><tr><td><code>prog\config.yaml</code> &mdash; configuration personnelle</td><td><code>html\</code> &mdash; regenere par lancer.cmd</td></tr><tr><td><code>documents\</code> &mdash; sources DOCX</td><td><code>manuels\</code> &mdash; regenere par remplace.py</td></tr></table>
+</div></body></html>

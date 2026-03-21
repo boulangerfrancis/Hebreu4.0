@@ -1,11 +1,28 @@
-# maj_github_v1.6.py — Version 1.6
+# maj_github_v1.17.py — Version 1.17
 # Mise a jour automatique du site GitHub :
 #   1) Synchronisation des fichiers sources modifies (sync_dossiers.py)
 #   2) Generation du site statique (lancer.cmd nolocal — sans serveur node)
 #   3) Commit + Push vers GitHub
-# v1.6 : suppression token dans URL git (revoque par GitHub push protection)
-#        utilise git push origin main + Windows Credential Manager
-#        suppression github_token et github_user de config.yaml
+# v1.17 : fix SyntaxWarning backslash dans docstring _trouver_git_ghd
+# v1.16 : utilise le git de GitHub Desktop pour le push
+#         git systeme bloque par Windows Firewall en sous-process Python
+#         git GHD a les bons credentials + reseau + permissions
+# v1.15 : Popen streaming
+# v1.14 : git push nu, zero interference credential
+#         GCM (GitHub Desktop) gere le renouvellement automatique
+#         fallback http.extraheader si config.yaml a un token valide
+# v1.12 : verification token GitHub via API avant push
+# v1.11 : URL avec token passee directement a git push
+#         du credential manager (core.askpass/GCM ouvrait /dev/tty)
+# v1.10 : http.extraheader (insuffisant, core.askpass non neutralise)
+# v1.9 : http.extraheader + credential.helper vide = contourne Credential Manager
+#         (le manager ouvrait un browser OAuth et bloquait)
+#         si pas de token : credential.helper laisse en place (GitHub Desktop)
+# v1.8 : GIT_ASKPASS Python (obsolete - contourne pas le credential manager)
+# v1.7 : authentification via GIT_ASKPASS + token dans config.yaml
+#        evite le conflit Credential Manager entre plusieurs utilisateurs
+#        le token n'apparait jamais dans les URLs ni dans les logs
+# v1.6 : suppression token dans URL git
 # v1.5 : etape 2 streaming Popen evite blocage buffer
 # v1.4 : lancer.cmd appele avec argument 'nolocal'
 # v1.3 : fermeture propre par croix ; confirmation optionnelle
@@ -13,7 +30,7 @@
 # v1.1 : lancer.cmd remplace genere_site.py
 # Usage : double-clic sur MAJ_GITHUB.cmd (qui active virpy13 puis lance ce script)
 
-version = ("maj_github.py", "1.6")
+version = ("maj_github.py", "1.17")
 print(f"[Import] {version[0]} - Version {version[1]} charge")
 
 import sys
@@ -44,6 +61,8 @@ CONFIG_DEFAUT = {
     "filtre":           "",   # filtre pour sync_dossiers (vide = tout)
     "branche":          "main",
     "confirmation_git": "true",  # demander confirmation avant push
+    "github_token":     "",   # Personal Access Token (ghp_...)
+    "github_user":      "",   # nom utilisateur GitHub
 }
 
 def _parser_simple(texte: str) -> dict:
@@ -71,7 +90,8 @@ def lire_config(chemin: Path) -> dict:
     cfg = CONFIG_DEFAUT.copy()
     for cle in ("racine_source", "racine_site_local", "lancer_cmd",
                 "url_github", "message_commit", "filtre", "branche",
-                "confirmation_git"):
+                "confirmation_git",
+                "github_token", "github_user"):
         if cle in raw and raw[cle] is not None:
             cfg[cle] = str(raw[cle]).strip()
     return cfg
@@ -238,6 +258,99 @@ class FenetreMaj(tk.Tk):
             self.log_widget.see("end")
             self.log_widget.config(state="disabled")
         self.after(0, _do)
+
+    def _trouver_git_ghd(self) -> str:
+        """
+        Cherche le git.exe bundlé par GitHub Desktop.
+        Retourne le chemin complet si trouvé, sinon "git" (git système).
+
+        GitHub Desktop installe son propre git dans :
+          %LOCALAPPDATA%/GitHubDesktop/app-X.X.X/resources/app/git/cmd/git.exe
+        Ce git hérite des credentials et de la config réseau de GitHub Desktop,
+        ce qui évite les blocages pare-feu et les problèmes de credential manager.
+        """
+        import glob
+        local_app = os.environ.get("LOCALAPPDATA", "")
+        if not local_app:
+            return "git"
+
+        patterns = [
+            os.path.join(local_app,
+                "GitHubDesktop", "app-*", "resources", "app",
+                "git", "cmd", "git.exe"),
+            os.path.join(local_app,
+                "GitHubDesktop", "app-*", "resources", "app",
+                "git", "mingw64", "bin", "git.exe"),
+        ]
+        candidats = []
+        for pattern in patterns:
+            candidats.extend(glob.glob(pattern))
+
+        if not candidats:
+            return "git"
+
+        # Prendre la version la plus recente (tri sur le chemin = tri sur app-X.X.X)
+        candidats.sort(reverse=True)
+        return candidats[0]
+
+    def _lire_credential_manager(self, site: str) -> tuple:
+        """
+        Lit les credentials GitHub depuis le Credential Manager Windows
+        via "git credential fill". Retourne (user, token) ou ("", "").
+        Compatible avec GitHub Desktop qui stocke ses credentials via GCM.
+        """
+        try:
+            proc = subprocess.run(
+                ["git", "credential", "fill"],
+                input="protocol=https\nhost=github.com\n\n",
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                cwd=site,
+                timeout=5,
+            )
+            if proc.returncode != 0 or not proc.stdout:
+                return "", ""
+            user = token = ""
+            for line in proc.stdout.splitlines():
+                if line.startswith("username="):
+                    user = line[len("username="):].strip()
+                elif line.startswith("password="):
+                    token = line[len("password="):].strip()
+            return user, token
+        except Exception:
+            return "", ""
+
+    def _verifier_token(self, user: str, token: str) -> tuple:
+        """
+        Verifie le token PAT via l'API GitHub.
+        Retourne (ok: bool, message: str, login: str)
+        """
+        import urllib.request, urllib.error, json
+        url = "https://api.github.com/user"
+        req = urllib.request.Request(url)
+        req.add_header("Authorization", f"token {token}")
+        req.add_header("Accept", "application/vnd.github.v3+json")
+        req.add_header("User-Agent", "maj_github/1.12")
+        try:
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                data  = json.loads(resp.read().decode("utf-8"))
+                login = data.get("login", "")
+                if login.lower() == user.lower():
+                    return True, "OK", login
+                else:
+                    return False, (
+                        f"Token valide mais login={login!r} != github_user={user!r} dans config.yaml"
+                    ), login
+        except urllib.error.HTTPError as e:
+            if e.code == 401:
+                return False, "Token invalide ou expire (HTTP 401)", ""
+            if e.code == 403:
+                return False, "Token sans permission repo (HTTP 403) — cocher repo", ""
+            return False, f"Erreur HTTP {e.code}", ""
+        except Exception as e:
+            return False, f"Pas de connexion : {e}", ""
 
     def _set_etape(self, idx: int, statut: str):
         """
@@ -528,22 +641,93 @@ class FenetreMaj(tk.Tk):
         if remote_txt.strip():
             self._log(f"  Remote : {remote_txt.splitlines()[0]}", "#AED6F1")
 
-        # git push via origin — credentials gérés par Windows Credential Manager
-        # (configuré une fois avec : cmdkey /generic:git:https://github.com
-        #                                    /user:GuyTitt /pass:TON_TOKEN)
+        # ── Authentification ─────────────────────────────────────────
+        # Strategie : git push nu, sans aucune interference credential.
+        #
+        # GCM (Git Credential Manager, installe par GitHub Desktop) gere tout :
+        #   - Token valide en cache  → push silencieux, aucune action
+        #   - Token expire           → GCM ouvre le browser UNE fois, se renouvelle,
+        #                              les prochains pushes sont silencieux
+        #
+        # NE PAS toucher a credential.helper ni core.askpass :
+        #   les neutraliser empeche GCM de fonctionner et provoque /dev/tty ou 401.
+        #
+        # Fallback : si config.yaml contient un token valide, on l'utilise via
+        #   http.extraheader (sans toucher au credential system).
+
+        token = self.cfg.get("github_token", "").strip()
+        user  = self.cfg.get("github_user",  "").strip()
+
+        env = os.environ.copy()
+        extra_git_args = []
+
+        # Verifier si le token config.yaml est valide (ne pas bloquer si absent)
+        if token and user:
+            self._log("  Verification token config.yaml...", "#DDDDDD")
+            api_ok, api_msg, api_login = self._verifier_token(user, token)
+            if api_ok:
+                import base64
+                b64 = base64.b64encode(f"{user}:{token}".encode()).decode()
+                extra_git_args = [
+                    "-c", f"http.extraheader=Authorization: Basic {b64}",
+                ]
+                self._log(f"  Token config.yaml OK ({api_login}) — utilise.", "#2ECC71")
+            else:
+                self._log(f"  Token config.yaml invalide ({api_msg}).", "#FFD700")
+                self._log("  → GCM (GitHub Desktop) utilise en fallback.", "#AED6F1")
+        else:
+            self._log("  Pas de token dans config.yaml — GCM utilise.", "#AED6F1")
+            self._log("  (Si le navigateur s'ouvre : c'est normal, une seule fois)", "#888888")
+
+        # git push — utilise le git de GitHub Desktop si disponible.
+        # Le git systeme est souvent bloque par Windows Firewall quand lance
+        # depuis un sous-process Python. Le git GHD a les bons droits reseau
+        # et les bons credential helpers configures par GitHub Desktop.
+        git_exe = self._trouver_git_ghd()
+        if git_exe != "git":
+            self._log(f"  Git GitHub Desktop detecte.", "#2ECC71")
+        else:
+            self._log(f"  Git systeme utilise (GitHub Desktop non detecte).", "#FFD700")
+
         self._log(f"  git push origin {branche} ...", "#DDDDDD")
-        code, sortie = run_cmd(
-            ["git", "push", "origin", branche],
-            cwd=site
-        )
+        sortie = ""
+        code   = -1
+        try:
+            proc_git = subprocess.Popen(
+                [git_exe] + extra_git_args + ["push", "origin", branche],
+                cwd=site,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                env=env,
+            )
+            lines = []
+            for ligne in proc_git.stdout:
+                ligne = ligne.rstrip()
+                if ligne:
+                    lines.append(ligne)
+            proc_git.wait()
+            code   = proc_git.returncode
+            sortie = "\n".join(lines)
+        except Exception as e:
+            code, sortie = -1, str(e)
+
+        # Masquer le token dans les logs
+        if token and sortie:
+            sortie = sortie.replace(token, "***")
         if sortie.strip():
             for ligne in sortie.strip().split("\n"):
                 couleur = "#FF6B6B" if "error" in ligne.lower() else "#DDDDDD"
                 self._log(f"  {ligne}", couleur)
+
         if code != 0:
             self._log(f"  ERREUR git push (code {code})", "#FF6B6B")
-            self._log("  → Vérifier que le token est dans le Credential Manager :", "#FFD700")
-            self._log("    cmdkey /generic:git:https://github.com /user:GuyTitt /pass:TOKEN", "#FFD700")
+            self._log("  Si l'erreur persiste :", "#FFD700")
+            self._log("  → Ouvrir GitHub Desktop → File → Options → Sign out / Sign in", "#FFD700")
+            self._log("    Cela renouvelle le token dans le Credential Manager", "#FFD700")
+            self._log("  → Ou ajouter un token PAT valide dans prog\\config.yaml", "#FFD700")
             self._set_etape(idx, "erreur")
             self._terminer(False)
             return False
@@ -643,4 +827,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-# fin de maj_github_v1.6.py - Version 1.6
+# fin de maj_github_v1.7.py - Version 1.7

@@ -1,4 +1,6 @@
-# builder.py — Version 1.0
+# builder.py — Version 1.2
+# v1.2 : lien TDM utilise DOSSIER_TDM (variable) au lieu de "TDM" hardcode
+# v1.1 : lib1 renomme en lib
 # Module "BUILDER" : génération HTML et copie fichiers
 #
 # Extrait de genere_site.py v24.0 → refactorisation v25.0
@@ -7,7 +9,7 @@
 #   - copier_fichiers_site() : copie DOCUMENTS → HTML
 #   - Helpers navigation, templates HTML
 
-version = ("builder.py", "1.0")
+version = ("builder.py", "1.2")
 print(f"[Import] {version[0]} - Version {version[1]} chargé")
 
 import os
@@ -17,10 +19,11 @@ from typing import List, Dict, Any
 from bs4 import BeautifulSoup
 
 from settings import DOSSIER_DOCUMENTS, DOSSIER_HTML, BASE_PATH, CONFIG
-from lib1 import html_utils as html
-from lib1 import structure_utils as struct
-from lib1 import pdf_utils as pdf
-from lib1 import fichier_utils as fichiers
+DOSSIER_TDM = CONFIG.get("dossier_tdm", "tdm")
+from lib import html_utils as html
+from lib import structure_utils as struct
+from lib import pdf_utils as pdf
+from lib import fichier_utils as fichiers
 from documents import normaliser_nom
 
 # Constantes issues de CONFIG
@@ -127,7 +130,7 @@ def generer_navigation_ariane(chemin_relatif: List[str],
         current_parent = current_parent / nom_dossier
 
     nav_html += f'</div><div class="droite">'
-    nav_html += f'<a href="{BASE_PATH}/TDM/index.html" class="monbouton">Sommaire</a>'
+    nav_html += f'<a href="{BASE_PATH}/{DOSSIER_TDM}/index.html" class="monbouton">Sommaire</a>'
     nav_html += f'</div></nav>'
 
     if VOIR_STRUCTURE:
@@ -329,4 +332,4 @@ def initialiser_dossier_html(style_source: Path, dossier_tdm: str,
     (html_dir / dossier_tdm).mkdir(parents=True, exist_ok=True)
     log_func(f"  Dossier {dossier_tdm}/ créé")
 
-# Fin builder.py v1.0
+# Fin builder.py v1.2

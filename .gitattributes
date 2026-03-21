@@ -1,2 +1,32 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# .gitattributes — Hebreu4.0
+# Eviter la conversion automatique LF/CRLF par git
+# Les fichiers batch (.cmd, .bat) doivent rester en CRLF sous Windows
+
+# Par defaut : pas de conversion
+* -text
+
+# Fichiers texte connus : laisser git gérer (optionnel)
+*.html  text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.py    text eol=lf
+*.md    text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.txt   text eol=lf
+*.json  text eol=lf
+
+# Fichiers batch Windows : imposer CRLF
+*.cmd   text eol=crlf
+*.bat   text eol=crlf
+
+# Fichiers binaires : pas de conversion
+*.pdf   binary
+*.docx  binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.bmp   binary
+*.ico   binary
+*.zip   binary

@@ -1,6 +1,10 @@
-# cree_table_des_matieres.py — Version 6.30
+# cree_table_des_matieres.py — Version 6.32
+# v6.33 : dossiers TDM lus depuis CONFIG (plus de "TDM" hardcode)
+#         GitHub Pages = Linux = sensible a la casse
+# v6.32 : shims elimines
+# v6.31 : lib1 renomme en lib
 
-version = ("cree_table_des_matieres.py", "6.30")
+version = ("cree_table_des_matieres.py", "6.33")
 print(f"[Version] {version[0]} — {version[1]}")
 
 # v6.30 : resolution des templates {{nom_document_sans_ext}} via
@@ -12,10 +16,10 @@ import re
 from pathlib import Path
 from bs4 import BeautifulSoup
 
-from lib1.options import DOSSIER_DOCUMENTS, DOSSIER_HTML, BASE_PATH
-from lib1.config import CONFIG
-from lib1 import html_utils as html  # v6.29: Import html_utils pour templates
-from lib1 import structure_utils as struct  # v6.30: resolution templates
+from settings import DOSSIER_DOCUMENTS, DOSSIER_HTML, BASE_PATH, CONFIG
+DOSSIER_TDM = CONFIG.get("dossier_tdm", "tdm")
+from lib import html_utils as html  # v6.29: Import html_utils pour templates
+from lib import structure_utils as struct  # v6.30: resolution templates
 
 def lire(variable: dict, element: str, defaut) -> object:
     """Lit une valeur dans un dictionnaire, retourne la valeur par défaut sinon.
@@ -258,7 +262,7 @@ def charger_configuration_tdm() -> dict:
     Returns:
         dict: Configuration (entete, pied, navigation, etc.) ou dict vide.
     """
-    tdm_sources = Path(DOSSIER_DOCUMENTS) / "TDM"
+    tdm_sources = Path(DOSSIER_DOCUMENTS) / DOSSIER_TDM
     return charger_structure(tdm_sources)
 
 def ajouter_entete(html_parts: list, config_tdm: dict, tdm_sources: Path) -> None:
@@ -326,7 +330,7 @@ def generer_tdm() -> None:
     html_parts = []
     html_parts.append(deb_html("Table des matières"))
 
-    tdm_sources = racine_sources / "TDM"
+    tdm_sources = racine_sources / DOSSIER_TDM
 
     ajouter_entete(html_parts, config_tdm, tdm_sources)
     ajouter_navigation(html_parts, config_tdm)
@@ -338,7 +342,7 @@ def generer_tdm() -> None:
     html_brut = "".join(html_parts)
     html_prettify = BeautifulSoup(html_brut, 'html.parser').prettify()
 
-    tdm_path = Path(DOSSIER_HTML) / "TDM"
+    tdm_path = Path(DOSSIER_HTML) / DOSSIER_TDM
     tdm_path.mkdir(parents=True, exist_ok=True)
     (tdm_path / "index.html").write_text(html_prettify, encoding="utf-8")
     log("TDM/index.html généré avec succès")

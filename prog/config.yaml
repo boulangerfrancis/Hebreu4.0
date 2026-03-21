@@ -1,9 +1,11 @@
-# config.yaml — maj_github.py v1.6
-# Mise a jour du site GitHub Hebreu4.0
-# Placer ce fichier dans le meme dossier que maj_github_v1.6.py
+# config_v1.5.yaml version 1.5
+# config.yaml — maj_github.py v1.7
+# Mise a jour du site GitHub
+# Placer ce fichier dans le meme dossier que maj_github_v1.7.py
+# IMPORTANT : ce fichier est personnel — ne pas le partager ni le publier
 
 # Dossier contenant les fichiers source editables par l'utilisateur
-racine_source     = C:\Users\frabo\Documents\Site Web perso\Site B.F. hébreu 17 mars 2026\Hebreu4.0
+racine_source     = C:\Users\frabo\Documents\Site Web perso\Site B.F. hébreu 21 mars 2026\Hebreu4.0
 
 # Dossier racine du site local (depot git clone de GitHub)
 racine_site_local = C:\SiteGITHUB\Hebreu4.0
@@ -11,17 +13,22 @@ racine_site_local = C:\SiteGITHUB\Hebreu4.0
 # Chemin complet vers lancer.cmd (generateur du site)
 lancer_cmd        = C:\SiteGITHUB\Hebreu4.0\prog\lancer.cmd
 
-# URL du depot GitHub (informatif uniquement — non utilisee pour le push)
+# URL du depot GitHub (informatif uniquement)
 url_github        = https://github.com/boulangerfrancis/Hebreu4.0
 
 # ── Authentification GitHub ────────────────────────────────────
-# Le token est gere par Windows Credential Manager (a faire une seule fois) :
-#   https://github.com/settings/tokens
-#   cmdkey /generic:git:https://github.com /user:boulangerfrancis /pass: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
+# Token PAT (Personal Access Token) :
+#   GitHub > Settings > Developer settings >
+#   Personal access tokens > Tokens (classic) > Generate new token
+#   Cocher : repo (tout le bloc)
+#   Expiration : No expiration
 #
-# Apres cette commande, git push fonctionne automatiquement sans mot de passe.
-# Pour verifier : cmdkey /list | findstr github
-# Pour supprimer : cmdkey /delete:git:https://github.com
+# Le token est utilise uniquement au moment du push via GIT_ASKPASS
+# Il n'apparait jamais dans les URLs ni dans les logs
+# Chaque utilisateur met son propre token dans SON config.yaml
+
+github_token      = 
+github_user       = 
 
 # ── Options ───────────────────────────────────────────────────
 # Message du commit : "auto" = date+heure automatique
@@ -36,4 +43,6 @@ branche           = main
 confirmation_git  = true
 
 # Filtre fichiers (vide = tout accepter)
-filtre            = .*\.docx$,.*\.html$
+filtre            = .*\.docx$,.*\.png$,.*\.html$,.*\.py$
+
+# config_v1.5.yaml version 1.5

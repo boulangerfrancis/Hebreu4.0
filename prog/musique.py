@@ -1,4 +1,5 @@
-# musique_v1.13.py — Version 1.13
+# musique_v1.14.py — Version 1.14
+# v1.14 : lib1 renomme en lib
 # v1.13: traceback complet sur erreur bouton pour diagnostic
 # v1.12: utilise normalisation_utils.py
 #        suppression de _normaliser_fichier() interne
@@ -13,12 +14,12 @@ import shutil
 from pathlib import Path
 from typing import List, Dict, Optional
 
-version = ("musique.py", "1.13")
+version = ("musique.py", "1.14")
 print(f"[Import] {version[0]} - Version {version[1]} charge")
 
 import traceback as _traceback
 
-from lib1 import structure_utils as struct
+from lib import structure_utils as struct
 from settings import DOSSIER_DOCUMENTS, DOSSIER_HTML, BASE_PATH, CONFIG
 
 # Import normalisation_utils depuis le meme dossier que musique.py

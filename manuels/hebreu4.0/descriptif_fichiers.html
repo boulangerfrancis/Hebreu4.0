@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<meta name="version" content="1.2">
+<title>Descriptif des fichiers &mdash; H&eacute;breu4.0</title>
+<style>*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;font-size:14px;line-height:1.65;background:#F0F4F8;color:#222;min-height:100vh;}
+.page{max-width:960px;margin:0 auto;padding:24px;}
+h1{font-size:22px;color:#2E75B6;border-bottom:2px solid #2E75B6;padding-bottom:6px;margin:32px 0 12px;}
+h2{font-size:17px;color:#1F4E79;margin:24px 0 8px;}
+h3{font-size:15px;color:#2E75B6;margin:16px 0 6px;}
+p{margin:8px 0;}
+table{border-collapse:collapse;width:100%;margin:12px 0;background:#fff;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+th{background:#1F4E79;color:#fff;padding:9px 12px;text-align:left;font-size:13px;}
+td{border-bottom:1px solid #E8EEF4;padding:8px 12px;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#F5FAFF;}
+code,pre{font-family:'Courier New',monospace;font-size:13px;}
+code{background:#EBF3FB;padding:2px 6px;border-radius:3px;color:#1F4E79;}
+pre{background:#1E1E2E;color:#CDD6F4;padding:16px;border-radius:6px;margin:12px 0;white-space:pre-wrap;line-height:1.5;}
+pre .cmd{color:#A6E3A1;}
+pre .comment{color:#6C7086;}
+pre .path{color:#89DCEB;}
+ul,ol{margin:8px 0;padding-left:24px;}
+li{margin:4px 0;}
+.info-tbl td:first-child{background:#D5E8F0;font-weight:bold;width:160px;white-space:nowrap;}
+.note{background:#FEF9E7;border-left:4px solid #F4D03F;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.warn{background:#FDEDEC;border-left:4px solid #E74C3C;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.tip{background:#EAFAF1;border-left:4px solid #27AE60;padding:12px 16px;margin:12px 0;border-radius:0 6px 6px 0;}
+.ok{color:#27AE60;font-weight:bold;}
+.err{color:#E74C3C;font-weight:bold;}
+.warn-txt{color:#E67E22;font-weight:bold;}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:bold;margin-left:6px;vertical-align:middle;}
+.b-gen{background:#D5E8F0;color:#1F4E79;}
+.b-new{background:#D5F5E3;color:#1A5E38;}
+.b-tech{background:#FAD7A0;color:#784212;}
+.b-comp{background:#E8DAEF;color:#512E5F;}
+header{background:linear-gradient(135deg,#1F4E79 0%,#2E75B6 100%);color:#fff;padding:28px 32px 20px;border-radius:8px;margin-bottom:28px;}
+header h1{color:#fff;border:none;margin:0 0 4px;}
+header p{opacity:.8;font-size:13px;margin:0;}
+.breadcrumb{font-size:12px;color:#888;margin-bottom:20px;}
+.breadcrumb a{color:#2E75B6;text-decoration:none;}
+.breadcrumb a:hover{text-decoration:underline;}
+</style></head><body><div class="page">
+<header><h1>Descriptif des fichiers &mdash; H&eacute;breu4.0</h1><p>R&ocirc;le, entr&eacute;es, traitement et sorties de chaque module &mdash; v1.2</p></header>
+<div class="breadcrumb"><a href="../index.html">&#127968; Accueil</a> &rsaquo; H&eacute;breu4.0</div>
+<table class="info-tbl" style="max-width:580px;margin-bottom:24px;">
+<tr><td>Version</td><td>1.2</td></tr>
+<tr><td>Date</td><td>Mars 2026</td></tr>
+<tr><td>Dossier</td><td><code>package\manuels\hebreu4.0\</code></td></tr>
+</table>
+
+<div class="note"><b>Comment lire cette page :</b> chaque section d&eacute;crit un module &mdash;
+ses <b>entr&eacute;es</b> (donn&eacute;es qu'il re&ccedil;oit), son <b>traitement</b> (ce qu'il fait),
+ses <b>sorties</b> (ce qu'il produit). Les modules sont pr&eacute;sent&eacute;s dans l'ordre
+o&ugrave; ils sont appel&eacute;s pendant une g&eacute;n&eacute;ration.</div>
+
+<h1>1. Cha&icirc;ne de g&eacute;n&eacute;ration du site</h1>
+<p>Quand vous double-cliquez sur <code>lancer.cmd</code>, voici ce qui se passe dans l'ordre&nbsp;:</p>
+<pre>lancer.cmd
+  &rarr; genere_site.py  (orchestre 5 phases)
+        Phase 1 : documents.py   (scan + conversion PDF)
+        Phase 2 : documents.py   (STRUCTURE.py par dossier)
+        Phase 3 : builder.py     (HTML de navigation)
+        Phase 4 : musique.py     (boutons YouTube sur PDF)
+        Phase 5 : cree_table_des_matieres.py  (TDM globale)</pre>
+
+<h1>2. Programmes principaux</h1>
+
+<h2>lancer.cmd &mdash; v4.4 &mdash; Point d'entr&eacute;e Windows</h2>
+<p><b>Entr&eacute;es :</b></p>
+<ul>
+<li>Argument optionnel <code>nolocal</code> : si pr&eacute;sent, le serveur node.js ne d&eacute;marre pas
+  (utilis&eacute; par <code>maj_github.py</code> pour la g&eacute;n&eacute;ration sans consultation)</li>
+<li>Environnement : d&eacute;tecte <code>C:irpy13\Scriptsctivate.bat</code></li>
+</ul>
+<p><b>Traitement :</b></p>
+<ol>
+<li>Passe en mode UTF-8 (<code>chcp 65001</code>) pour les accents dans les logs</li>
+<li>Calcule <code>PROG_DIR</code> (= dossier de <code>lancer.cmd</code>, c'est-&agrave;-dire <code>prog\</code>)
+  et <code>ROOT_DIR</code> (= dossier parent, c'est-&agrave;-dire la racine du projet)</li>
+<li>Active l'environnement virtuel <code>C:irpy13</code> (ou avertit si absent)</li>
+<li><b>Supprime enti&egrave;rement <code>html\</code></b> avant g&eacute;n&eacute;ration pour &eacute;viter les fichiers r&eacute;siduels</li>
+<li>Ex&eacute;cute <code>python genere_site.py</code> depuis <code>prog\</code></li>
+<li>Copie <code>prog\style.css</code> vers <code>html\Hebreu4.0\html\style.css</code>
+  (n&eacute;cessaire pour la consultation locale avec node.js)</li>
+<li>Lance <code>npx http-server html -p 3500</code> (sauf si <code>nolocal</code>)</li>
+</ol>
+<p><b>Sorties :</b> dossier <code>html\</code> reconstruit, serveur local sur le port 3500.</p>
+
+<h2>genere_site.py &mdash; v25.6 &mdash; Orchestrateur principal</h2>
+<p><b>Entr&eacute;es :</b></p>
+<ul>
+<li><code>settings.py</code> : <code>DOSSIER_DOCUMENTS</code>, <code>DOSSIER_HTML</code>,
+  <code>BASE_PATH</code>, <code>CONFIG</code> (configuration globale)</li>
+<li>Le dossier <code>documents\</code> et toute son arborescence (DOCX, PDF, CSV, HTML)</li>
+<li><code>prog\style.css</code> pour la copie vers <code>html\</code></li>
+</ul>
+<p><b>Traitement en 5 phases :</b></p>
+<ul>
+<li><b>Init :</b> cr&eacute;e le dossier <code>html\</code>, copie <code>style.css</code>,
+  ouvre <code>generation.log</code></li>
+<li><b>Phase 1&ndash;2 :</b> parcourt r&eacute;cursivement <code>documents\</code> via
+  <code>os.walk()</code>. Pour chaque dossier : appelle <code>documents.generer_pdf_manquants()</code>
+  et <code>documents.mettre_a_jour_structure()</code></li>
+<li><b>Phase 3 :</b> appelle <code>builder.copier_fichiers_site()</code></li>
+<li><b>Phase 4 :</b> reparcourt <code>documents\</code> pour les partitions
+  (<code>musique.traiter_partitions_du_dossier()</code>), apr&egrave;s la copie pour
+  que les boutons &eacute;crasent les PDF sans bouton</li>
+<li><b>Phase 5 :</b> appelle <code>cree_table_des_matieres.generer_tdm()</code></li>
+</ul>
+<p><b>Sorties :</b> dossier <code>html\</code> complet avec pages HTML, PDF, CSS, et
+<code>html	dm\index.html</code>. Fichier <code>prog\generation.log</code>.</p>
+
+<h2>settings.py &mdash; v1.1 &mdash; Configuration centrale</h2>
+<p><b>Entr&eacute;es :</b> aucune entr&eacute;e dynamique &mdash; c'est un fichier de constantes &eacute;dit&eacute; manuellement.</p>
+<p><b>Contenu et r&ocirc;le de chaque variable :</b></p>
+<ul>
+<li><code>DOSSIER_RACINE</code> = <code>C:\SiteGITHUB\Hebreu4.0</code> &mdash; racine absolue du projet
+  (tous les chemins en d&eacute;coulent)</li>
+<li><code>DOSSIER_DOCUMENTS</code> = <code>DOSSIER_RACINE\documents</code> &mdash; dossier scann&eacute;
+  par <code>genere_site.py</code> pour trouver les DOCX &agrave; convertir</li>
+<li><code>DOSSIER_HTML</code> = <code>DOSSIER_RACINE\html</code> &mdash; dossier de sortie du site g&eacute;n&eacute;r&eacute;</li>
+<li><code>BASE_PATH</code> = <code>/Hebreu4.0/html</code> &mdash; pr&eacute;fixe inject&eacute; dans
+  <b>tous</b> les liens HTML (href, src). Vide (<code>""</code>) pour test local,
+  <code>/Hebreu4.0/html</code> pour GitHub Pages</li>
+<li><code>CONFIG["dossier_tdm"]</code> = <code>"tdm"</code> &mdash; nom du sous-dossier TDM dans
+  <code>html\</code>. <b>En minuscules</b> : GitHub Pages tourne sur Linux (sensible &agrave; la casse)</li>
+<li><code>CONFIG["ignorer"]</code> &mdash; liste des dossiers exclus du scan
+  (<code>nppBackup</code>, <code>.git</code>, <code>package</code>...)</li>
+<li><code>CONFIG["extensions_acceptees"]</code> &mdash; extensions list&eacute;es dans les index HTML
+  (pdf, docx, html, jpg...)</li>
+<li><code>CONFIG["regeneration"]</code> &mdash; contr&ocirc;le la conversion PDF :
+  <code>False</code>=seulement si manquant, <code>True</code>=tout reg&eacute;n&eacute;rer,
+  <code>"JJ/MM/AAAA"</code>=reg&eacute;n&eacute;rer si modifi&eacute; apr&egrave;s cette date</li>
+<li><code>CONFIG["ajout_affichage"]</code> = <code>["&thinsp;&#128193;&thinsp;", "", "&thinsp;&#128216;&thinsp;", ""]</code>
+  &mdash; pr&eacute;fixes/suffixes emojis ajout&eacute;s aux noms de dossiers et fichiers dans les index</li>
+</ul>
+<p><b>Sorties :</b> variables globales import&eacute;es par tous les autres modules
+(<code>from settings import DOSSIER_DOCUMENTS, DOSSIER_HTML, BASE_PATH, CONFIG</code>).</p>
+
+<h2>documents.py &mdash; v2.2 &mdash; Gestion DOCX, PDF et STRUCTURE.py</h2>
+<p><b>Entr&eacute;es (par dossier appel&eacute; depuis genere_site.py) :</b></p>
+<ul>
+<li>Un dossier de <code>documents\</code> avec ses fichiers DOCX, PDF, images</li>
+<li><code>CONFIG["regeneration"]</code> et <code>CONFIG["regenerer_pdf_aujourd_hui"]</code>
+  pour la strat&eacute;gie de reconversion</li>
+</ul>
+<p><b>Traitement &mdash; <code>generer_pdf_manquants(dossier)</code> :</b></p>
+<ul>
+<li>Liste tous les fichiers <code>.docx</code> du dossier (sauf pr&eacute;fix&eacute;s <code>__</code>
+  qui sont des partitions trait&eacute;es s&eacute;par&eacute;ment)</li>
+<li>Pour chaque DOCX, calcule le nom PDF normalis&eacute; via <code>normaliser_nom()</code>
+  (accents supprim&eacute;s, espaces &rarr; <code>_</code>, minuscules)</li>
+<li>Compare la date du DOCX et du PDF existant selon la strat&eacute;gie :
+  absent, DOCX plus r&eacute;cent, date seuil, ou forc&eacute;</li>
+<li>Si conversion n&eacute;cessaire : appelle <code>conversion_pdf.convertir_docx_vers_pdf()</code></li>
+</ul>
+<p><b>Traitement &mdash; <code>mettre_a_jour_structure(dossier)</code> :</b></p>
+<ul>
+<li>Lit le fichier <code>STRUCTURE.py</code> existant dans le dossier (ou cr&eacute;e un dict vide)</li>
+<li>Ajoute les nouveaux fichiers d&eacute;tect&eacute;s (PDF, HTML, images) avec leurs m&eacute;tadonn&eacute;es :
+  <code>nom_html</code>, <code>nom_affich&eacute;</code>, <code>nom_TDM</code>, <code>position</code>, <code>affich&eacute;_TDM</code></li>
+<li>Pr&eacute;serve la cl&eacute; <code>partitions</code> (ajout&eacute;e par <code>musique.py</code>)</li>
+<li>Sauvegarde <code>STRUCTURE.py</code> au format JSON dans le dossier</li>
+</ul>
+<p><b>Sorties :</b> fichiers PDF cr&eacute;&eacute;s/mis &agrave; jour dans <code>documents\</code>,
+fichiers <code>STRUCTURE.py</code> mis &agrave; jour dans chaque sous-dossier.</p>
+
+<h2>builder.py &mdash; v1.2 &mdash; G&eacute;n&eacute;ration HTML</h2>
+<p><b>Entr&eacute;es :</b></p>
+<ul>
+<li>Les fichiers <code>STRUCTURE.py</code> de chaque dossier (lus par <code>lib/structure_utils.py</code>)</li>
+<li>Les fichiers optionnels <code>entete.html</code>, <code>entete_general.html</code>,
+  <code>pied.html</code>, <code>pied_general.html</code> pr&eacute;sents dans les dossiers sources</li>
+<li><code>DOSSIER_TDM</code> depuis <code>settings.CONFIG</code> pour construire le lien Sommaire</li>
+</ul>
+<p><b>Traitement &mdash; <code>generer_page_index(dossier)</code> :</b></p>
+<ul>
+<li>Construit la barre de navigation (fil d'Ariane + bouton "Sommaire" pointant sur
+  <code>BASE_PATH/tdm/index.html</code> &mdash; variable, jamais hardcod&eacute;)</li>
+<li>Charge l'en-t&ecirc;te HTML local ou g&eacute;n&eacute;ral si pr&eacute;sent</li>
+<li>G&eacute;n&egrave;re le tableau de liens vers les fichiers list&eacute;s dans <code>STRUCTURE.py</code>
+  (avec pr&eacute;fixes emojis, noms affich&eacute;s personnalis&eacute;s)</li>
+<li>Charge le pied de page HTML</li>
+<li>Utilise <code>BeautifulSoup</code> pour indenter proprement le HTML</li>
+</ul>
+<p><b>Traitement &mdash; <code>copier_fichiers_site()</code> :</b></p>
+<ul>
+<li>Parcourt <code>documents\</code> r&eacute;cursivement</li>
+<li>Pour chaque dossier : cr&eacute;e le dossier miroir dans <code>html\</code>, g&eacute;n&egrave;re son
+  <code>index.html</code>, copie les fichiers aux extensions copiables
+  (PDF, HTML, images, CSS, JS)</li>
+</ul>
+<p><b>Sorties :</b> arborescence <code>html\</code> avec un <code>index.html</code> par dossier
+et tous les fichiers consultables.</p>
+
+<h2>musique.py &mdash; v1.14 &mdash; Partitions musicales</h2>
+<p><b>Entr&eacute;es (par dossier) :</b></p>
+<ul>
+<li>Fichier <code>__correspondance.csv</code> obligatoire dans le dossier : d&eacute;finit
+  pour chaque partition le lien YouTube et les param&egrave;tres de boutons</li>
+<li>Colonnes CSV principales : <code>pdf_name</code>, <code>youtube_url</code>,
+  plus optionnellement : <code>transparence</code>, <code>pos_x</code>, <code>pos_y</code>,
+  <code>rotation</code>, <code>orientation</code>, <code>largeur</code>, <code>hauteur</code>,
+  <code>ordre_boutons</code> (0=YouTube|Jouer, 1=Jouer|YouTube)</li>
+<li>Les PDF de partitions dans le dossier source</li>
+</ul>
+<p><b>Traitement &mdash; <code>traiter_partitions_du_dossier(dossier)</code> :</b></p>
+<ul>
+<li>Lit <code>__correspondance.csv</code> et r&eacute;cup&egrave;re chaque ligne</li>
+<li>Pour chaque partition : lit le PDF source, appelle <code>place_bouton.py</code>
+  deux fois (bouton YouTube et bouton "Jouer ici" pointant sur le lecteur audio)</li>
+<li>Le PDF r&eacute;sultant (avec boutons) est sauvegard&eacute; dans le dossier HTML mirror</li>
+<li>En cas d'erreur, affiche un traceback complet pour diagnostic</li>
+</ul>
+<p><b>Sorties :</b> PDF modifi&eacute;s avec boutons cliquables dans <code>html\</code>.
+La signature de traitement est enregistr&eacute;e dans <code>STRUCTURE.py</code>.</p>
+
+<h2>cree_table_des_matieres.py &mdash; v6.33 &mdash; Table des mati&egrave;res globale</h2>
+<p><b>Entr&eacute;es :</b></p>
+<ul>
+<li>Tous les fichiers <code>STRUCTURE.py</code> de l'arborescence <code>documents\</code>
+  (lus r&eacute;cursivement)</li>
+<li>Le dossier optionnel <code>documents	dm\</code> pour les templates HTML
+  personnalis&eacute;s (<code>entete.html</code>, <code>pied.html</code>,
+  <code>entete_general.html</code>, <code>pied_general.html</code>)</li>
+<li><code>CONFIG["dossier_tdm"]</code> = <code>"tdm"</code> (nom du dossier de sortie)</li>
+</ul>
+<p><b>Traitement &mdash; <code>generer_tdm()</code> :</b></p>
+<ul>
+<li>Appelle <code>construire_arbo_recursif()</code> qui parcourt tous les dossiers
+  et construit un arbre HTML de liens (<code>&lt;li&gt;</code>) vers chaque document,
+  filtr&eacute; par <code>affich&eacute;_TDM: True</code> dans <code>STRUCTURE.py</code></li>
+<li>Les noms affich&eacute;s utilisent <code>nom_TDM</code> du <code>STRUCTURE.py</code>,
+  avec r&eacute;solution des templates <code>{{nom_document_sans_ext}}</code></li>
+<li>Applique les styles Markdown-like (<code>**gras**</code>, <code>__italique__</code>,
+  <code>[rouge]texte[/rouge]</code>...)</li>
+<li>Assemble le HTML final : en-t&ecirc;te + navigation + arbre + pied</li>
+<li>Formatte avec BeautifulSoup (<code>prettify()</code>)</li>
+</ul>
+<p><b>Sortie :</b> <code>html	dm\index.html</code> &mdash; page de table des mati&egrave;res
+du site avec liens vers tous les documents marqu&eacute;s visibles.</p>
+
+<h1>3. Modules de conversion</h1>
+
+<h2>conversion_pdf.py &mdash; v1.0 &mdash; Wrapper de conversion</h2>
+<p><b>R&ocirc;le :</b> couche d'abstraction entre <code>documents.py</code> et <code>docx_to_pdf.py</code>.
+Isole la gestion des erreurs et l'import conditionnel de PDFCreator.</p>
+<p><b>Entr&eacute;es de <code>convertir_docx_vers_pdf(docx_path, pdf_path, log_func)</code> :</b></p>
+<ul>
+<li><code>docx_path</code> : chemin absolu du fichier DOCX source</li>
+<li><code>pdf_path</code> : chemin absolu du PDF &agrave; cr&eacute;er (peut &ecirc;tre dans un autre dossier)</li>
+<li><code>log_func</code> : fonction de log inject&eacute;e (affiche les messages dans la console
+  et <code>generation.log</code> sans coupler conversion_pdf &agrave; genere_site)</li>
+</ul>
+<p><b>Traitement :</b> v&eacute;rifie que PDFCreator est disponible, appelle
+<code>docx_to_pdf.docx_to_pdf()</code> avec timeout 60 secondes,
+capture <code>FileNotFoundError</code>, <code>TimeoutError</code> et exceptions g&eacute;n&eacute;riques.</p>
+<p><b>Sortie :</b> <code>True</code> si PDF cr&eacute;&eacute; avec succ&egrave;s, <code>False</code> sinon.</p>
+
+<h2>docx_to_pdf.py &mdash; v1.3 &mdash; Conversion via PDFCreator</h2>
+<p><b>Pr&eacute;requis syst&egrave;me :</b> Microsoft Word install&eacute; + PDFCreator install&eacute; et
+configur&eacute; en profil AutoSave vers <code>C:	emp\</code> + PyWin32.</p>
+<p><b>Entr&eacute;es de <code>docx_to_pdf(docx_path, pdf_path, timeout=120)</code> :</b></p>
+<ul>
+<li><code>docx_path</code> : chemin du DOCX &agrave; convertir</li>
+<li><code>pdf_path</code> : chemin de destination du PDF</li>
+<li><code>timeout</code> : d&eacute;lai max en secondes (d&eacute;faut : 120s)</li>
+</ul>
+<p><b>Traitement :</b></p>
+<ol>
+<li>V&eacute;rifie si Word est d&eacute;j&agrave; ouvert (demande de le fermer si c'est le cas)</li>
+<li>Nettoie <code>C:	emp\</code> des PDF r&eacute;siduels de pr&eacute;c&eacute;dentes conversions</li>
+<li>Ouvre le DOCX dans Word via COM (<code>win32com.client</code>)</li>
+<li>Imprime vers PDFCreator (imprimante virtuelle), qui d&eacute;pose le PDF dans <code>C:	emp\</code></li>
+<li>Attend que le PDF apparaisse et soit d&eacute;verrouill&eacute; (<code>wait_for_file()</code> scrute
+  toutes les 0,5s)</li>
+<li>D&eacute;place le PDF vers <code>pdf_path</code> via <code>shutil.move()</code></li>
+<li>Supprime le r&eacute;sidu &eacute;ventuel dans <code>C:	emp\</code></li>
+</ol>
+<p><b>Sortie :</b> fichier PDF cr&eacute;&eacute; &agrave; l'emplacement demand&eacute;.
+Chaque <code>print()</code> est flush&eacute; imm&eacute;diatement (log en temps r&eacute;el).</p>
+
+<h2>normalisation_utils.py &mdash; v1.0 &mdash; R&egrave;gle unique de nommage</h2>
+<p><b>Probl&egrave;me r&eacute;solu :</b> plusieurs modules devaient normaliser des noms de fichiers
+pour les URLs (supprimer accents, g&eacute;rer espaces). Chacun avait sa propre impl&eacute;mentation,
+ce qui cr&eacute;ait des incoh&eacute;rences. Ce module est la source unique de v&eacute;rit&eacute;.</p>
+<p><b>Fonctions export&eacute;es :</b></p>
+<ul>
+<li><code>normaliser_nom(nom)</code> &mdash; transformation principale :
+  d&eacute;composition Unicode NFD &rarr; suppression des diacritiques (cat&eacute;gorie Mn) &rarr;
+  apostrophes <code>'</code> et <code>&rsquo;</code> &rarr; <code>_</code> &rarr;
+  espaces &rarr; <code>_</code> &rarr; minuscules.
+  Exemples : <code>'Mi ha-ish.Ps 34.13-15.pdf'</code> &rarr; <code>'mi_ha-ish.ps_34.13-15.pdf'</code>,
+  <code>"L'Auvergnat.pdf"</code> &rarr; <code>'l_auvergnat.pdf'</code></li>
+<li><code>nom_pdf_depuis_source(nom_fichier)</code> &mdash; change l'extension en <code>.pdf</code>
+  et normalise le stem. <code>'A A.docx'</code> &rarr; <code>'a_a.pdf'</code></li>
+<li><code>normaliser_chemin(chemin_relatif)</code> &mdash; normalise chaque segment d'un
+  <code>Path</code> s&eacute;par&eacute;ment</li>
+</ul>
+<p><b>Import&eacute; par :</b> <code>musique.py</code>, <code>documents.py</code>,
+<code>genere_site.py</code>, <code>builder.py</code>.</p>
+
+<h2>place_bouton.py &mdash; v1.1 &mdash; Injection de bouton YouTube dans un PDF</h2>
+<p><b>Entr&eacute;es de <code>main(args)</code> (appel&eacute; par musique.py) :</b></p>
+<ul>
+<li><code>dossier_src</code>, <code>fichier_src</code> : PDF source &agrave; modifier</li>
+<li><code>dossier_dst</code>, <code>fichier_dst</code> : PDF de sortie (peut &ecirc;tre identique)</li>
+<li><code>youtube_url</code> : URL du lien cliquable</li>
+<li>Param&egrave;tres optionnels : <code>transparence</code> (0-100), <code>pos_x</code> et
+  <code>pos_y</code> en points PDF depuis le bas-gauche,
+  <code>rotation</code> (N/E/S/O), <code>orientation_texte</code> (1-8),
+  <code>largeur</code>, <code>hauteur</code> en points</li>
+</ul>
+<p><b>Traitement :</b></p>
+<ol>
+<li>Cr&eacute;e un calque PDF transparent avec <b>reportlab</b> :
+  dessine un rectangle rouge arrondi avec le texte "YouTube",
+  appliqu&eacute; avec la rotation et l'orientation demand&eacute;es</li>
+<li>Fusionne ce calque sur la premi&egrave;re page du PDF source avec <b>pypdf</b>
+  (<code>merge_page()</code>)</li>
+<li>Ajoute une annotation <code>pypdf.annotations.Link</code> avec la zone de clic
+  correspondante et <code>NewWindow=True</code> pour ouvrir dans un nouvel onglet</li>
+</ol>
+<p><b>Sortie :</b> nouveau PDF avec bouton cliquable sur la premi&egrave;re page.
+Le lien est une vraie annotation PDF (pas une image) : il fonctionne dans tous
+les lecteurs PDF.</p>
+
+<h1>4. Modules de d&eacute;ploiement et maintenance</h1>
+
+<h2>remplace.py &mdash; v21 &mdash; D&eacute;ploiement package &rarr; prog + manuels</h2>
+<p><b>Entr&eacute;es :</b></p>
+<ul>
+<li>Dossier <code>package\prog\</code> : fichiers sources versionn&eacute;s
+  (<code>nom_vX.Y.ext</code>)</li>
+<li>Dossier <code>package\manuels\</code> : manuels HTML versionn&eacute;s
+  (<code>nom_vX.Y.html</code>)</li>
+</ul>
+<p><b>Traitement :</b></p>
+<ol>
+<li><b>Auto-d&eacute;couverte :</b> scan r&eacute;cursif de <code>package\prog\</code>
+  (sous-dossiers inclus sauf <code>archive\</code> et <code>ancien\</code>).
+  Pour chaque fichier avec suffixe <code>_vX.Y</code> : d&eacute;duit le nom cible
+  (sans version) et le dossier de destination</li>
+<li><b>S&eacute;lection version MAX :</b> si <code>maj_github_v1.9.py</code> et
+  <code>maj_github_v1.17.py</code> coexistent, seul <code>v1.17</code> est d&eacute;ploy&eacute;.
+  Comparaison num&eacute;rique (1.17 &gt; 1.9) et non alphab&eacute;tique</li>
+<li><b>D&eacute;cision de copie :</b> copie si version source &ne; version cible,
+  ou si la date du fichier source est plus r&eacute;cente de plus de 2 secondes</li>
+<li><b>Suppressions :</b> efface les anciens fichiers obsol&egrave;tes
+  (<code>lib1\</code>, anciens shims, docx d&eacute;plac&eacute;s dans <code>manuels\</code>)</li>
+<li><b>Rapport "non r&eacute;pertori&eacute;s" :</b> liste les fichiers pr&eacute;sents dans
+  <code>prog\</code> qui ne correspondent &agrave; aucun fichier source connu</li>
+<li><b>Style.css local :</b> copie <code>prog\style.css</code> vers
+  <code>html\Hebreu4.0\html\</code> pour la consultation locale avec node.js</li>
+</ol>
+<p><b>Sorties :</b> <code>prog\</code> et <code>manuels\</code> synchronis&eacute;s avec
+les derni&egrave;res versions de <code>package\</code>.</p>
+
+<h2>maj_github.py &mdash; v1.17 &mdash; Publication sur GitHub</h2>
+<p><b>Entr&eacute;es :</b></p>
+<ul>
+<li><code>prog\config.yaml</code> : <code>racine_source</code>, <code>racine_site_local</code>,
+  <code>lancer_cmd</code>, <code>url_github</code>, <code>branche</code>,
+  <code>github_token</code> (optionnel), <code>github_user</code> (optionnel),
+  <code>message_commit</code>, <code>confirmation_git</code></li>
+</ul>
+<p><b>Traitement en 4 &eacute;tapes (interface graphique Tkinter) :</b></p>
+<ol>
+<li><b>&Eacute;tape 1 &mdash; Sync sources :</b> appelle <code>sync_dossiers.py</code> pour copier
+  les fichiers modifi&eacute;s de <code>racine_source</code> vers <code>racine_site_local</code></li>
+<li><b>&Eacute;tape 2 &mdash; G&eacute;n&eacute;ration :</b> lance <code>lancer.cmd nolocal</code>
+  via <code>subprocess.Popen</code> en streaming (lecture ligne par ligne pour
+  affichage en temps r&eacute;el sans blocage)</li>
+<li><b>&Eacute;tape 3 &mdash; Commit :</b> <code>git add -A</code> + <code>git commit</code>
+  avec message automatique ou fix&eacute;</li>
+<li><b>&Eacute;tape 4 &mdash; Push :</b>
+  <ul>
+  <li>Si <code>github_token</code> renseign&eacute; : v&eacute;rifie le token via l'API
+    <code>api.github.com/user</code> (affiche le login et les 4 premiers/derniers caract&egrave;res
+    du token pour diagnostic), puis injecte
+    <code>Authorization: Basic base64(user:token)</code> via <code>-c http.extraheader</code></li>
+  <li>Si token absent : utilise GCM (Git Credential Manager de GitHub Desktop).
+    <b>N&eacute;cessite que <code>git-credential-manager.exe</code> soit autoris&eacute; dans
+    le pare-feu Windows</b></li>
+  <li>Lance <code>git push origin main</code> via <code>subprocess.Popen</code>
+    (streaming, GCM peut interagir avec Windows si besoin)</li>
+  </ul>
+</li>
+</ol>
+<p><b>Sorties :</b> site publi&eacute; sur GitHub Pages. Le token n'appara&icirc;t jamais
+dans les logs (masqu&eacute; apr&egrave;s usage).</p>
+
+<h2>sync_dossiers.py &mdash; v1.1 &mdash; Synchronisation dossiers</h2>
+<p><b>Entr&eacute;es :</b></p>
+<ul>
+<li><code>config.yaml</code> (chemin pass&eacute; en argument ou indiqu&eacute; par drag&amp;drop) avec :
+  <code>source</code>, <code>destination</code>, <code>recent</code> (true/false),
+  <code>filtre</code> (regex s&eacute;par&eacute;es par virgules), <code>nouveau</code></li>
+</ul>
+<p><b>Traitement :</b></p>
+<ol>
+<li>Parcourt r&eacute;cursivement <code>source</code> et compare avec <code>destination</code></li>
+<li>S&eacute;lectionne les fichiers selon les crit&egrave;res :
+  date plus r&eacute;cente si <code>recent=true</code>, absent si <code>nouveau=true</code>,
+  correspondant au filtre regex</li>
+<li>Affiche une fen&ecirc;tre Tkinter avec la liste des fichiers &agrave; copier
+  (cases &agrave; cocher pour en exclure)</li>
+<li>Copie les fichiers coch&eacute;s avec <code>shutil.copy2()</code>
+  (pr&eacute;serve les dates)</li>
+</ol>
+<p><b>Sortie :</b> fichiers sync&eacute;s. Message uniquement en cas d'erreur
+(mode silencieux si tout se passe bien).</p>
+
+<h2>installer.py &mdash; v1.1 &mdash; Cr&eacute;ation de l'environnement Python</h2>
+<p><b>Entr&eacute;es :</b> aucune &mdash; ex&eacute;cut&eacute; directement par l'utilisateur.
+Peut &ecirc;tre relanc&eacute; sans risque si l'environnement existe d&eacute;j&agrave;.</p>
+<p><b>Traitement :</b></p>
+<ol>
+<li>V&eacute;rifie Python &ge; 3.11 (bloquant si inf&eacute;rieur)</li>
+<li>Cr&eacute;e <code>C:irpy13\</code> via <code>python -m venv</code> (ou v&eacute;rifie que
+  <code>Scripts\pip.exe</code> existe si le dossier est d&eacute;j&agrave; pr&eacute;sent)</li>
+<li>Met &agrave; jour pip dans le venv</li>
+<li>Pour chaque package : v&eacute;rifie avec <code>pip show</code> s'il est d&eacute;j&agrave; install&eacute;,
+  sinon ex&eacute;cute <code>pip install</code></li>
+<li>V&eacute;rifie les imports dans le venv via <code>subprocess</code> (test isol&eacute;)</li>
+</ol>
+<p><b>Packages install&eacute;s :</b> pyyaml, python-docx, pypdf, reportlab, psutil,
+<b>beautifulsoup4</b> (requis pour la TDM), requests.</p>
+<p><b>Sortie :</b> <code>C:irpy13\</code> pr&ecirc;t &agrave; l'emploi, activ&eacute; par
+<code>lancer.cmd</code> et <code>MAJ_GITHUB.cmd</code>.</p>
+
+<h2>versions.py &mdash; v1.8 &mdash; V&eacute;rification de l'installation</h2>
+<p><b>Entr&eacute;es :</b> aucune &mdash; scanne <code>prog\</code> et <code>prog\lib\</code>
+depuis son propre emplacement.</p>
+<p><b>Traitement :</b></p>
+<ol>
+<li><b>Scan dynamique :</b> liste tous les <code>.py</code> de <code>prog\</code> et
+  <code>prog\lib\</code> via <code>glob()</code>. Pour chaque fichier : extrait la version
+  via <code>ast.parse()</code> (analyse l'AST, pas d'import) et compare
+  &agrave; la version minimale attendue</li>
+<li><b>Autres fichiers :</b> v&eacute;rifie pr&eacute;sence de <code>lancer.cmd</code>,
+  <code>config.yaml</code>, <code>style.css</code>, <code>remplace.py</code></li>
+<li><b>Config.yaml :</b> parse avec le parser <code>cl&eacute; = valeur</code>
+  (PyYAML &eacute;choue sur ce format non standard), v&eacute;rifie la pr&eacute;sence des
+  7 champs obligatoires, d&eacute;tecte les valeurs mod&egrave;le non remplac&eacute;es</li>
+<li><b>Token GitHub :</b> si token et user renseign&eacute;s, appelle
+  <code>api.github.com/user</code> avec l'en-t&ecirc;te Authorization pour valider
+  le token et v&eacute;rifier la correspondance du login</li>
+</ol>
+<p><b>Sortie :</b> rapport color&eacute; en console (ANSI) avec bilan OK/ATTENTION/ERREURS.
+Code de retour 0 si tout est OK, 1 sinon (utilisable dans des scripts batch).</p>
+
+<h1>5. Modules de biblioth&egrave;que (<code>prog\lib\</code>)</h1>
+<p>Ces modules ne sont jamais appel&eacute;s directement &mdash; ils sont import&eacute;s
+par les programmes principaux.</p>
+
+<h2>lib\structure_utils.py &mdash; v2.1 &mdash; Gestion de STRUCTURE.py</h2>
+<p><b>R&ocirc;le :</b> chaque dossier de <code>documents\</code> poss&egrave;de un fichier
+<code>STRUCTURE.py</code> (format JSON malgr&eacute; l'extension .py) qui m&eacute;morise
+les m&eacute;tadonn&eacute;es de chaque document pour personnaliser leur affichage.</p>
+<p><b>Fonctions principales :</b></p>
+<ul>
+<li><code>charger_structure(dossier)</code> : lit <code>STRUCTURE.py</code>
+  et retourne un dict <code>{"dossiers": [...], "fichiers": [...]}</code></li>
+<li><code>sauvegarder_structure(dossier, struct)</code> : &eacute;crit le dict en JSON.
+  Fix v2.1 : <code>json.dumps</code> &eacute;crit <code>null</code>, converti en
+  <code>None</code> Python lors de la relecture</li>
+<li><code>resoudre_templates_runtime(item, variables)</code> : r&eacute;sout les
+  templates <code>{{nom_document_sans_ext}}</code>, <code>{{titre_dossier}}</code>
+  dans les champs <code>nom_affich&eacute;</code>, <code>nom_TDM</code>, etc.
+  Plusieurs passes pour les templates imbriqu&eacute;s (max 5)</li>
+</ul>
+
+<h2>lib\partition_utils.py &mdash; v2.3 &mdash; Boutons PDF partitions</h2>
+<p><b>R&ocirc;le :</b> version avanc&eacute;e de <code>place_bouton.py</code> pour les partitions
+musicales avec deux boutons et param&egrave;tres CSV complets.</p>
+<p><b>Param&egrave;tres CSV g&eacute;r&eacute;s :</b> position X/Y en pourcentage de la page,
+transparence, rotation, orientation, ordre des boutons (YouTube avant ou apr&egrave;s "Jouer ici"),
+position X n&eacute;gative depuis le bord droit.</p>
+<p>Toutes les op&eacute;rations PDF utilisent le syst&egrave;me de coordonn&eacute;es CTM
+(Current Transformation Matrix) de PDF, avec conversion vers MediaBox pour les
+zones de clic &mdash; compatible avec les PDF en rotation (pages en paysage).</p>
+
+<h2>lib\html_utils.py &mdash; v1.0 &mdash; Templates HTML</h2>
+<p>Chargement et interpr&eacute;tation des fichiers templates HTML
+(<code>entete.html</code>, <code>pied.html</code>...). Remplace les variables
+<code>{{BASE_PATH}}</code> et g&egrave;re les commentaires de d&eacute;bug de structure.</p>
+
+<h2>libichier_utils.py &mdash; v1.1 &mdash; Filtrage de fichiers</h2>
+<p>D&eacute;tection des fichiers sp&eacute;ciaux (pr&eacute;fix&eacute;s <code>__</code> comme
+<code>__correspondance.csv</code>, <code>__partition_*.docx</code>),
+filtrage par extension, d&eacute;tection des fichiers entete/pied &agrave; exclure
+des listes de documents.</p>
+
+<h2>lib\pdf_utils.py &mdash; v1.1 &mdash; Logique de r&eacute;g&eacute;n&eacute;ration PDF</h2>
+<p>Fonctions utilitaires pour d&eacute;cider si un PDF doit &ecirc;tre reconverti :
+comparaison de dates DOCX/PDF, d&eacute;tection "cr&eacute;&eacute; aujourd'hui".
+Fix v1.1 : &eacute;vite la reconversion en boucle lorsque le PDF est cr&eacute;&eacute;
+dans la m&ecirc;me journ&eacute;e.</p>
+
+</div></body></html>

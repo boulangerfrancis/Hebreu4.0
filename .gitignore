@@ -10,5 +10,8 @@
 # Fichiers à ignorer dans les transferts
 *.bak*
 *.log
+pied*.html
+entete*.html
+*.zip
 #__* # ignore les fichiers commençant par __ dans tous les dossiers
 #  ### FIN ###

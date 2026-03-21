@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<meta name="version" content="1.0"><title>Cahier des charges — Hébreu4.0</title>
+<style>body{font-family:Arial,sans-serif;font-size:14px;line-height:1.6;max-width:960px;margin:0 auto;padding:24px;color:#222;}
+h1{font-size:22px;color:#2E75B6;border-bottom:2px solid #2E75B6;padding-bottom:6px;margin-top:32px;}
+h2{font-size:17px;color:#1F4E79;margin-top:24px;}
+h3{font-size:15px;color:#2E75B6;margin-top:16px;}
+table{border-collapse:collapse;width:100%;margin:12px 0;}
+th{background:#1F4E79;color:#fff;padding:8px 10px;text-align:left;}
+td{border:1px solid #ccc;padding:7px 10px;vertical-align:top;}
+tr:nth-child(even) td{background:#F0F6FB;}
+code,pre{font-family:'Courier New',monospace;font-size:13px;background:#F2F2F2;padding:2px 6px;border-radius:3px;}
+pre{padding:12px;display:block;white-space:pre-wrap;}
+.info-table td:first-child{background:#D5E8F0;font-weight:bold;width:160px;}
+ul{margin:6px 0;padding-left:24px;}
+li{margin:3px 0;}
+ol{margin:6px 0;padding-left:24px;}
+.titre{text-align:center;color:#1F4E79;font-size:28px;font-weight:bold;margin:32px 0 8px;}
+.sous-titre{text-align:center;color:#595959;font-size:15px;margin-bottom:24px;}
+.note{background:#FFF8E1;border-left:4px solid #F9A825;padding:10px 14px;margin:12px 0;}
+.ok{color:#27AE60;font-weight:bold;}
+.warn{color:#E67E22;font-weight:bold;}
+.err{color:#E74C3C;font-weight:bold;}
+</style></head><body>
+<div class="titre">Cahier des charges — Hébreu4.0</div>
+<div class="sous-titre">Générateur de site statique pour l'hébreu biblique</div>
+<table class="info-table" style="max-width:600px;margin:0 auto 28px;">
+  <tr><td>Version</td><td>1.0</td></tr>
+  <tr><td>Date</td><td>Mars 2026</td></tr>
+  <tr><td>Dossier</td><td><code>manuel\hebreu4.0\</code></td></tr>
+</table>
+
+<h1>1. Contexte et objectif</h1>
+<p>Le projet Hébreu4.0 est un site statique personnel dédié à l'étude de l'hébreu biblique, hébergé sur GitHub Pages. Son auteur maintient le site à partir de simples fichiers Word (.docx), sans connaissance HTML ni hébergement payant, avec une mise à jour en quelques clics depuis un PC Windows.</p>
+
+<h1>2. Besoins fonctionnels</h1>
+<h2>2.1 Génération du site</h2>
+<table><tr><th>Fonction</th><th>Priorité</th><th>Description</th></tr>
+<tr><td>Conversion DOCX → HTML</td><td class="ok">Obligatoire</td><td>Chaque .docx est converti en lien HTML cliquable</td></tr>
+<tr><td>Conversion DOCX → PDF</td><td class="ok">Obligatoire</td><td>Via PDFCreator (Windows)</td></tr>
+<tr><td>Navigation arborescente</td><td class="ok">Obligatoire</td><td>L'arborescence de documents\ est reproduite dans le menu</td></tr>
+<tr><td>Table des matières</td><td class="ok">Obligatoire</td><td>TDM globale générée automatiquement</td></tr>
+<tr><td>Partitions musicales</td><td class="warn">Souhaitable</td><td>Boutons YouTube et lecteur audio dans les PDF</td></tr>
+<tr><td>Feuille de style CSS</td><td class="ok">Obligatoire</td><td>Cohérente en local et sur GitHub Pages</td></tr>
+</table>
+
+<h2>2.2 Déploiement</h2>
+<table><tr><th>Fonction</th><th>Priorité</th><th>Description</th></tr>
+<tr><td>Mise à jour GitHub</td><td class="ok">Obligatoire</td><td>Un clic publie les modifications sur GitHub Pages</td></tr>
+<tr><td>Synchronisation sources</td><td class="ok">Obligatoire</td><td>Les .docx modifiés sont synchronisés depuis le poste de travail</td></tr>
+<tr><td>Multi-postes</td><td class="warn">Souhaitable</td><td>Fonctionne sur plusieurs PC avec config.yaml différent</td></tr>
+<tr><td>Installation automatique</td><td class="warn">Souhaitable</td><td>installer.py crée l'environnement Python</td></tr>
+</table>
+
+<h1>3. Contraintes techniques</h1>
+<table><tr><th>Contrainte</th><th>Valeur</th></tr>
+<tr><td>Système</td><td>Windows 10 / 11</td></tr>
+<tr><td>Python</td><td>3.11+, environnement virtuel <code>C:\virpy13</code></td></tr>
+<tr><td>Bibliothèques Python</td><td>pyyaml, python-docx, pypdf, reportlab, psutil</td></tr>
+<tr><td>Conversion PDF</td><td>PDFCreator configuré comme imprimante virtuelle</td></tr>
+<tr><td>Serveur local</td><td>Node.js (<code>npx http-server</code>) port 3500</td></tr>
+<tr><td>Hébergement</td><td>GitHub Pages (dépôt public gratuit)</td></tr>
+<tr><td>Authentification GitHub</td><td>Token PAT dans config.yaml — jamais commité</td></tr>
+</table>
+
+<h1>4. Contraintes de conception</h1>
+<ul>
+<li>Aucune modification manuelle du HTML généré — tout part des .docx sources</li>
+<li><code>config.yaml</code> est le seul fichier à éditer lors d'un changement de poste</li>
+<li><code>package\</code> est la source de vérité — <code>prog\</code> est toujours régénérable</li>
+<li>Aucun fichier sensible (token) ne doit être commité sur git</li>
+<li>Le site doit fonctionner identiquement en local et sur GitHub Pages</li>
+</ul>
+
+<h1>5. Pipeline de génération</h1>
+<table><tr><th>Phase</th><th>Description</th><th>Module</th></tr>
+<tr><td>Phase 1 — Scan</td><td>Parcours récursif de documents\ : détection .docx, .pdf, partitions</td><td>documents.py</td></tr>
+<tr><td>Phase 2 — PDF</td><td>Conversion DOCX → PDF si absent ou plus ancien</td><td>conversion_pdf.py</td></tr>
+<tr><td>Phase 3 — Partitions</td><td>Ajout boutons YouTube sur les PDF de partitions</td><td>musique.py</td></tr>
+<tr><td>Phase 4 — HTML</td><td>Génération des pages de navigation</td><td>builder.py</td></tr>
+<tr><td>Phase 5 — TDM</td><td>Génération de la table des matières globale</td><td>cree_table_des_matieres.py</td></tr>
+</table>
+
+<h1>6. Hors périmètre</h1>
+<ul>
+<li>Pas d'interface web d'administration</li>
+<li>Pas de moteur de recherche</li>
+<li>Pas de génération sur Linux/macOS (PDFCreator = Windows uniquement)</li>
+<li>Pas de déploiement automatique sans confirmation</li>
+</ul>
+
+<h1>7. Évolutions prévues</h1>
+<table><tr><th>Évolution</th><th>Statut</th></tr>
+<tr><td>Scan récursif package\prog\</td><td class="ok">Fait — remplace.py v15</td></tr>
+<tr><td>installer.py</td><td class="ok">Fait — v1.0</td></tr>
+<tr><td>Diagnostic token GitHub</td><td class="ok">Fait — maj_github v1.12</td></tr>
+<tr><td>Sélection version MAX dans remplace.py</td><td class="ok">Fait — v17</td></tr>
+<tr><td>Génération PDF sans PDFCreator</td><td>Future — via LibreOffice CLI</td></tr>
+</table>
+
+</body></html>

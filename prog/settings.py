@@ -1,8 +1,9 @@
-# settings.py — Version 1.0
-# Fusion de config.py (v3.0) + options.py (v1.1)
+# settings.py — Version 1.1
+# v1.1 : dossier_tdm en minuscules (GitHub Pages = Linux = sensible a la casse)
+# v1.0 : Fusion de config.py (v3.0) + options.py (v1.1)
 # Un seul fichier de configuration pour tout le projet
 
-version = ("settings.py", "1.0")
+version = ("settings.py", "1.1")
 print(f"[Import] {version[0]} - Version {version[1]} chargé")
 
 # ============================================================================
@@ -38,7 +39,7 @@ CONFIG = {
     # ----------------------------------------
     # STRUCTURE ET NAVIGATION
     # ----------------------------------------
-    "dossier_tdm": "TDM",
+    "dossier_tdm": "tdm",
     "voir_structure": False,        # Ajoute commentaires HTML structure
     "lien_souligné_index": False,
 
@@ -86,4 +87,4 @@ CONFIG = {
 #   from settings import DOSSIER_DOCUMENTS, DOSSIER_HTML, BASE_PATH, CONFIG
 # ============================================================================
 
-# Fin settings.py v1.0
+# Fin settings.py v1.1

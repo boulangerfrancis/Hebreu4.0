@@ -1,4 +1,5 @@
-# documents.py — Version 2.1
+# documents.py — Version 2.2
+# v2.2 : lib1 renomme en lib
 # v2.1 : mettre_a_jour_structure préserve la clé "partitions"
 # v2.0 : nettoyage fichiers .params residuels (remplaces par STRUCTURE.py)
 # v1.9 : traiter_partitions_du_dossier + nom_partition_depuis_docx migres dans musique.py
@@ -20,7 +21,7 @@
 #   - Le PDF surchargé (avec boutons) est bien créé sans préfixe dans documents/
 #   - fichier_utils.doit_filtrer_fichier() mis à jour pour ne pas ignorer __partition_*.docx
 
-version = ("documents.py", "2.1")
+version = ("documents.py", "2.2")
 print(f"[Import] {version[0]} - Version {version[1]} chargé")
 
 import os
@@ -34,8 +35,8 @@ from typing import Dict, Any, List, Tuple
 from settings import DOSSIER_DOCUMENTS, DOSSIER_HTML, BASE_PATH, CONFIG
 
 # Import modules utilitaires
-from lib1 import structure_utils as struct
-from lib1 import fichier_utils as fichiers
+from lib import structure_utils as struct
+from lib import fichier_utils as fichiers
 
 # Import conversion PDF
 try:
@@ -48,7 +49,7 @@ except ImportError:
 
 # Import modules partitions
 try:
-    from lib1 import partition_utils as partitions
+    from lib import partition_utils as partitions
     HAS_PARTITION_LIBS = partitions.HAS_PDF_LIBS
 except ImportError:
     HAS_PARTITION_LIBS = False
