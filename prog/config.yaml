@@ -43,6 +43,6 @@ branche           = main
 confirmation_git  = true
 
 # Filtre fichiers (vide = tout accepter)
-filtre            = .*\.docx$,.*\.png$,.*\.html$,.*\.py$
+filtre            = .*\.docx$,.*\.png$,.*\.html$
 
 # config_v1.5.yaml version 1.5
